@@ -59,12 +59,133 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
-        children: Globals.items
+        children: items
             .map(
               (e) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Text(
-                  e["title"].toString(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.withOpacity(
+                      0.3,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      15,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        e["title"].toString(),
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Divider(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        e["description"].toString(),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Divider(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                              foregroundColor: WidgetStateProperty.all(
+                                Colors.white,
+                              ),
+                              backgroundColor: WidgetStateProperty.all(
+                                Colors.blue,
+                              ),
+                              padding: WidgetStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                  vertical: 5,
+                                  horizontal: 5,
+                                ),
+                              ),
+                              elevation: WidgetStateProperty.all(
+                                10,
+                              ),
+                              shape: WidgetStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    5,
+                                  ),
+                                ),
+                              ),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            child: const Text(
+                              "Edit",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                              foregroundColor: WidgetStateProperty.all(
+                                Colors.white,
+                              ),
+                              backgroundColor: WidgetStateProperty.all(
+                                Colors.red,
+                              ),
+                              padding: WidgetStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                  vertical: 5,
+                                  horizontal: 5,
+                                ),
+                              ),
+                              elevation: WidgetStateProperty.all(
+                                10,
+                              ),
+                              shape: WidgetStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    5,
+                                  ),
+                                ),
+                              ),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            child: const Text(
+                              "Remove",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
