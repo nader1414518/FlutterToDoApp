@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_app/controllers/todo_items_controller.dart';
 import 'package:to_do_app/screens/add_item_screen.dart';
+import 'package:to_do_app/screens/edit_item_screen.dart';
 import 'package:to_do_app/utils/globals.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -115,7 +117,20 @@ class HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
+                                return EditItemScreen(
+                                  id: e["id"],
+                                );
+                              })).then(
+                                (value) {
+                                  setState(() {
+                                    items = Globals.items;
+                                  });
+                                },
+                              );
+                            },
                             style: ButtonStyle(
                               foregroundColor: WidgetStateProperty.all(
                                 Colors.white,
@@ -149,7 +164,48 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Remove Item"),
+                                      content: const Text(
+                                          "Are you sure you want to remove this item?"),
+                                      actionsAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            TodoItemsController.removeItem(
+                                              e["id"],
+                                            );
+
+                                            Navigator.of(context).pop();
+
+                                            setState(() {
+                                              items = Globals.items;
+                                            });
+                                          },
+                                          child: const Text(
+                                            "Remove",
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text(
+                                            "Cancel",
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
                             style: ButtonStyle(
                               foregroundColor: WidgetStateProperty.all(
                                 Colors.white,

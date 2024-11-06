@@ -1,19 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
+import 'package:to_do_app/utils/globals.dart';
 
-class AddItemScreen extends StatefulWidget {
+class EditItemScreen extends StatefulWidget {
+  final int id;
+
+  const EditItemScreen({
+    super.key,
+    required this.id,
+  });
+
   @override
-  AddItemScreenState createState() => AddItemScreenState();
+  EditItemScreenState createState() => EditItemScreenState();
 }
 
-class AddItemScreenState extends State<AddItemScreen> {
+class EditItemScreenState extends State<EditItemScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
+  getData() {
+    try {
+      var item =
+          Globals.items.firstWhere((element) => element["id"] == widget.id);
+      setState(() {
+        titleController.text = item["title"].toString();
+        descriptionController.text = item["description"].toString();
+      });
+    } catch (e) {
+      Navigator.of(context).pop();
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getData();
   }
 
   @override
@@ -22,7 +45,7 @@ class AddItemScreenState extends State<AddItemScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Add Item",
+          "Edit Item",
         ),
       ),
       body: ListView(
@@ -76,7 +99,7 @@ class AddItemScreenState extends State<AddItemScreen> {
             children: [
               TextButton(
                 onPressed: () {
-                  TodoItemsController.addToDoItem({
+                  TodoItemsController.editItem(widget.id, {
                     "title": titleController.text,
                     "description": descriptionController.text,
                   });
@@ -84,7 +107,7 @@ class AddItemScreenState extends State<AddItemScreen> {
                   Navigator.of(context).pop();
                 },
                 child: const Text(
-                  "Add",
+                  "Edit",
                 ),
               ),
             ],
