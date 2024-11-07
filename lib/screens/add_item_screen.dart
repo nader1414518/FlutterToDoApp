@@ -75,8 +75,8 @@ class AddItemScreenState extends State<AddItemScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () {
-                  TodoItemsController.addToDoItem({
+                onPressed: () async {
+                  await TodoItemsController.addToDoItem({
                     "title": titleController.text,
                     "description": descriptionController.text,
                   });
