@@ -12,13 +12,26 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> items = [];
 
+  Future<void> getData() async {
+    try {
+      var res = await TodoItemsController.getItems();
+
+      setState(() {
+        items = res;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   void initState() {
     print("Hello from Init State ... ");
     // TODO: implement initState
     super.initState();
 
-    items = Globals.items;
+    // items = Globals.items;
+    getData();
   }
 
   @override
@@ -42,10 +55,8 @@ class HomeScreenState extends State<HomeScreen> {
               await Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) {
                 return AddItemScreen();
-              }));
-
-              setState(() {
-                items = Globals.items;
+              })).then((value) {
+                getData();
               });
             },
             icon: const Icon(
@@ -125,9 +136,7 @@ class HomeScreenState extends State<HomeScreen> {
                                 );
                               })).then(
                                 (value) {
-                                  setState(() {
-                                    items = Globals.items;
-                                  });
+                                  getData();
                                 },
                               );
                             },
@@ -183,9 +192,7 @@ class HomeScreenState extends State<HomeScreen> {
 
                                             Navigator.of(context).pop();
 
-                                            setState(() {
-                                              items = Globals.items;
-                                            });
+                                            getData();
                                           },
                                           child: const Text(
                                             "Remove",

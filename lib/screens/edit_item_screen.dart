@@ -18,15 +18,26 @@ class EditItemScreenState extends State<EditItemScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  getData() {
+  Future<void> getData() async {
     try {
-      var item =
-          Globals.items.firstWhere((element) => element["id"] == widget.id);
-      setState(() {
-        titleController.text = item["title"].toString();
-        descriptionController.text = item["description"].toString();
-      });
+      // var item =
+      //     Globals.items.firstWhere((element) => element["id"] == widget.id);
+
+      var itemRes = await TodoItemsController.getItem(widget.id);
+      if (itemRes["result"] == true) {
+        var item = Map<String, dynamic>.from(
+          itemRes["data"] as Map,
+        );
+
+        setState(() {
+          titleController.text = item["title"].toString();
+          descriptionController.text = item["description"].toString();
+        });
+      } else {
+        Navigator.of(context).pop();
+      }
     } catch (e) {
+      print(e.toString());
       Navigator.of(context).pop();
     }
   }
@@ -98,8 +109,8 @@ class EditItemScreenState extends State<EditItemScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () {
-                  TodoItemsController.editItem(widget.id, {
+                onPressed: () async {
+                  await TodoItemsController.editItem(widget.id, {
                     "title": titleController.text,
                     "description": descriptionController.text,
                   });
