@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
 import 'package:to_do_app/screens/add_item_screen.dart';
@@ -11,6 +12,9 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> items = [];
+
+  TextEditingController dateController = TextEditingController();
+  DateTime? selectedDate;
 
   Future<void> getData() async {
     try {
@@ -94,14 +98,164 @@ class HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        e["title"].toString(),
-                        style: const TextStyle(
-                          color: Colors.blue,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width:
+                                (MediaQuery.sizeOf(context).width - 60) * 0.6,
+                            child: Text(
+                              e["title"].toString(),
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text(
+                                      "Choose a time for your reminder",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                15,
+                                              ),
+                                            ),
+                                            isDense: true,
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                              vertical: 10,
+                                              horizontal: 10,
+                                            ),
+                                            labelText: "Date & Time",
+                                          ),
+                                          readOnly: true,
+                                          controller: dateController,
+                                          onTap: () {
+                                            showDatePicker(
+                                              context: context,
+                                              firstDate: DateTime.now(),
+                                              lastDate: DateTime.now().add(
+                                                const Duration(
+                                                  days: 365,
+                                                ),
+                                              ),
+                                            ).then((valueDate) {
+                                              showTimePicker(
+                                                context: context,
+                                                initialTime: TimeOfDay(
+                                                  hour: valueDate!.hour,
+                                                  minute: valueDate.minute,
+                                                ),
+                                              ).then((valueTime) {
+                                                // print(valueDate
+                                                //     .toIso8601String());
+                                                // print(valueTime.toString());
+
+                                                valueDate = valueDate!.copyWith(
+                                                  hour: valueTime!.hour,
+                                                  minute: valueTime.minute,
+                                                );
+
+                                                setState(() {
+                                                  selectedDate = valueDate;
+                                                  dateController.text =
+                                                      selectedDate!
+                                                          .toIso8601String();
+                                                });
+                                              });
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    actionsAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () async {
+                                          if (selectedDate == null) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  "Please select a date",
+                                                ),
+                                              ),
+                                            );
+                                            return;
+                                          }
+
+                                          await AwesomeNotifications()
+                                              .createNotification(
+                                            content: NotificationContent(
+                                              id: e["id"],
+                                              channelKey: 'basic_channel',
+                                              title: e["title"],
+                                              body: e["description"],
+                                              wakeUpScreen: true,
+                                              criticalAlert: true,
+
+                                              category:
+                                                  NotificationCategory.Alarm,
+                                              notificationLayout:
+                                                  NotificationLayout.BigText,
+                                              // bigPicture:
+                                              //     'asset://assets/images/delivery.jpeg',
+                                              // payload: {
+                                              //   'uuid': 'uuid-test'
+                                              // },
+                                              autoDismissible: false,
+                                            ),
+                                            schedule:
+                                                NotificationCalendar.fromDate(
+                                              date: selectedDate!,
+                                              preciseAlarm: true,
+                                              allowWhileIdle: true,
+                                            ),
+                                          );
+
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          "Schedule",
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          "Cancel",
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.alarm_add,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 10,
