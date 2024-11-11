@@ -1,6 +1,8 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:to_do_app/screens/home_screen.dart';
 
 void main() async {
@@ -35,6 +37,21 @@ void main() async {
         // debug: true,
       );
     }
+  } catch (e) {
+    print(e.toString());
+  }
+
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    print(e.toString());
+  }
+
+  try {
+    await Supabase.initialize(
+      url: dotenv.env["SUPABSE_PROJECT_URL"].toString(),
+      anonKey: dotenv.env["SUPABSE_API_KEY"].toString(),
+    );
   } catch (e) {
     print(e.toString());
   }
