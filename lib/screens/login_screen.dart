@@ -27,15 +27,15 @@ class LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.symmetric(
           vertical: 20,
           horizontal: 20,
         ),
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
         children: [
           const SizedBox(
-            height: 50,
+            height: 60,
           ),
           Container(
             width: (MediaQuery.sizeOf(context).width - 40) * 0.6,
@@ -97,27 +97,32 @@ class LoginScreenState extends State<LoginScreen> {
             children: [
               TextButton(
                 onPressed: () {},
-                child: const Text("Sign In"),
+                child: const Text(
+                  "Sign In",
+                ),
               ),
             ],
           ),
           const SizedBox(
-            height: 20,
+            height: 10,
+          ),
+          const Divider(),
+          const SizedBox(
+            height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return CreateAccountScreen();
-                      },
-                    ),
-                  );
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return CreateAccountScreen();
+                  }));
                 },
-                child: const Text("Create Account"),
+                child: const Text(
+                  "Create New Account",
+                ),
               ),
             ],
           ),
