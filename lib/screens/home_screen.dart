@@ -1,8 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:to_do_app/controllers/auth_controller.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
 import 'package:to_do_app/screens/add_item_screen.dart';
 import 'package:to_do_app/screens/edit_item_screen.dart';
+import 'package:to_do_app/screens/login_screen.dart';
 import 'package:to_do_app/utils/globals.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,312 +49,215 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "Home Screen",
-        ),
-        actions: [
-          IconButton(
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
             onPressed: () async {
-              await Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) {
-                return AddItemScreen();
-              })).then((value) {
-                getData();
-              });
+              await AuthController.logout();
+
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return LoginScreen();
+                  },
+                ),
+              );
             },
             icon: const Icon(
-              Icons.add_circle_outline,
+              Icons.logout,
+              color: Colors.red,
             ),
           ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(
-          vertical: 20,
-          horizontal: 10,
+          centerTitle: true,
+          title: const Text(
+            "Home Screen",
+          ),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return AddItemScreen();
+                })).then((value) {
+                  getData();
+                });
+              },
+              icon: const Icon(
+                Icons.add_circle_outline,
+              ),
+            ),
+          ],
         ),
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        children: items
-            .map(
-              (e) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey.withOpacity(
-                      0.3,
+        body: ListView(
+          padding: const EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: 10,
+          ),
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          children: items
+              .map(
+                (e) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 10,
                     ),
-                    borderRadius: BorderRadius.circular(
-                      15,
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey.withOpacity(
+                        0.3,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        15,
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width:
-                                (MediaQuery.sizeOf(context).width - 60) * 0.6,
-                            child: Text(
-                              e["title"].toString(),
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text(
-                                      "Choose a time for your reminder",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        TextFormField(
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                15,
-                                              ),
-                                            ),
-                                            isDense: true,
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                              horizontal: 10,
-                                            ),
-                                            labelText: "Date & Time",
-                                          ),
-                                          readOnly: true,
-                                          controller: dateController,
-                                          onTap: () {
-                                            showDatePicker(
-                                              context: context,
-                                              firstDate: DateTime.now(),
-                                              lastDate: DateTime.now().add(
-                                                const Duration(
-                                                  days: 365,
-                                                ),
-                                              ),
-                                            ).then((valueDate) {
-                                              showTimePicker(
-                                                context: context,
-                                                initialTime: TimeOfDay(
-                                                  hour: valueDate!.hour,
-                                                  minute: valueDate.minute,
-                                                ),
-                                              ).then((valueTime) {
-                                                // print(valueDate
-                                                //     .toIso8601String());
-                                                // print(valueTime.toString());
-
-                                                valueDate = valueDate!.copyWith(
-                                                  hour: valueTime!.hour,
-                                                  minute: valueTime.minute,
-                                                );
-
-                                                setState(() {
-                                                  selectedDate = valueDate;
-                                                  dateController.text =
-                                                      selectedDate!
-                                                          .toIso8601String();
-                                                });
-                                              });
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    actionsAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () async {
-                                          if (selectedDate == null) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  "Please select a date",
-                                                ),
-                                              ),
-                                            );
-                                            return;
-                                          }
-
-                                          await AwesomeNotifications()
-                                              .createNotification(
-                                            content: NotificationContent(
-                                              id: e["id"],
-                                              channelKey: 'basic_channel',
-                                              title: e["title"],
-                                              body: e["description"],
-                                              wakeUpScreen: true,
-                                              criticalAlert: true,
-
-                                              category:
-                                                  NotificationCategory.Alarm,
-                                              notificationLayout:
-                                                  NotificationLayout.BigText,
-                                              // bigPicture:
-                                              //     'asset://assets/images/delivery.jpeg',
-                                              // payload: {
-                                              //   'uuid': 'uuid-test'
-                                              // },
-                                              autoDismissible: false,
-                                            ),
-                                            schedule:
-                                                NotificationCalendar.fromDate(
-                                              date: selectedDate!,
-                                              preciseAlarm: true,
-                                              allowWhileIdle: true,
-                                            ),
-                                          );
-
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text(
-                                          "Schedule",
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text(
-                                          "Cancel",
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.alarm_add,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Divider(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        e["description"].toString(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Divider(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return EditItemScreen(
-                                  id: e["id"],
-                                );
-                              })).then(
-                                (value) {
-                                  getData();
-                                },
-                              );
-                            },
-                            style: ButtonStyle(
-                              foregroundColor: WidgetStateProperty.all(
-                                Colors.white,
-                              ),
-                              backgroundColor: WidgetStateProperty.all(
-                                Colors.blue,
-                              ),
-                              padding: WidgetStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                  vertical: 5,
-                                  horizontal: 5,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width:
+                                  (MediaQuery.sizeOf(context).width - 60) * 0.6,
+                              child: Text(
+                                e["title"].toString(),
+                                style: const TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ),
-                              elevation: WidgetStateProperty.all(
-                                10,
-                              ),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    5,
-                                  ),
-                                ),
-                              ),
-                              visualDensity: VisualDensity.compact,
-                            ),
-                            child: const Text(
-                              "Edit",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              showDialog(
+                            IconButton(
+                              onPressed: () {
+                                showDialog(
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: const Text("Remove Item"),
-                                      content: const Text(
-                                          "Are you sure you want to remove this item?"),
+                                      title: const Text(
+                                        "Choose a time for your reminder",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  15,
+                                                ),
+                                              ),
+                                              isDense: true,
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                                horizontal: 10,
+                                              ),
+                                              labelText: "Date & Time",
+                                            ),
+                                            readOnly: true,
+                                            controller: dateController,
+                                            onTap: () {
+                                              showDatePicker(
+                                                context: context,
+                                                firstDate: DateTime.now(),
+                                                lastDate: DateTime.now().add(
+                                                  const Duration(
+                                                    days: 365,
+                                                  ),
+                                                ),
+                                              ).then((valueDate) {
+                                                showTimePicker(
+                                                  context: context,
+                                                  initialTime: TimeOfDay(
+                                                    hour: valueDate!.hour,
+                                                    minute: valueDate.minute,
+                                                  ),
+                                                ).then((valueTime) {
+                                                  // print(valueDate
+                                                  //     .toIso8601String());
+                                                  // print(valueTime.toString());
+
+                                                  valueDate =
+                                                      valueDate!.copyWith(
+                                                    hour: valueTime!.hour,
+                                                    minute: valueTime.minute,
+                                                  );
+
+                                                  setState(() {
+                                                    selectedDate = valueDate;
+                                                    dateController.text =
+                                                        selectedDate!
+                                                            .toIso8601String();
+                                                  });
+                                                });
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                       actionsAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       actions: [
                                         TextButton(
-                                          onPressed: () {
-                                            TodoItemsController.removeItem(
-                                              e["id"],
+                                          onPressed: () async {
+                                            if (selectedDate == null) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    "Please select a date",
+                                                  ),
+                                                ),
+                                              );
+                                              return;
+                                            }
+
+                                            await AwesomeNotifications()
+                                                .createNotification(
+                                              content: NotificationContent(
+                                                id: e["id"],
+                                                channelKey: 'basic_channel',
+                                                title: e["title"],
+                                                body: e["description"],
+                                                wakeUpScreen: true,
+                                                criticalAlert: true,
+
+                                                category:
+                                                    NotificationCategory.Alarm,
+                                                notificationLayout:
+                                                    NotificationLayout.BigText,
+                                                // bigPicture:
+                                                //     'asset://assets/images/delivery.jpeg',
+                                                // payload: {
+                                                //   'uuid': 'uuid-test'
+                                                // },
+                                                autoDismissible: false,
+                                              ),
+                                              schedule:
+                                                  NotificationCalendar.fromDate(
+                                                date: selectedDate!,
+                                                preciseAlarm: true,
+                                                allowWhileIdle: true,
+                                              ),
                                             );
 
                                             Navigator.of(context).pop();
-
-                                            getData();
                                           },
                                           child: const Text(
-                                            "Remove",
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
+                                            "Schedule",
                                           ),
                                         ),
                                         TextButton(
@@ -365,48 +270,166 @@ class HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ],
                                     );
-                                  });
-                            },
-                            style: ButtonStyle(
-                              foregroundColor: WidgetStateProperty.all(
-                                Colors.white,
+                                  },
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.alarm_add,
                               ),
-                              backgroundColor: WidgetStateProperty.all(
-                                Colors.red,
-                              ),
-                              padding: WidgetStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                  vertical: 5,
-                                  horizontal: 5,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Divider(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          e["description"].toString(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Divider(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return EditItemScreen(
+                                    id: e["id"],
+                                  );
+                                })).then(
+                                  (value) {
+                                    getData();
+                                  },
+                                );
+                              },
+                              style: ButtonStyle(
+                                foregroundColor: WidgetStateProperty.all(
+                                  Colors.white,
                                 ),
-                              ),
-                              elevation: WidgetStateProperty.all(
-                                10,
-                              ),
-                              shape: WidgetStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    5,
+                                backgroundColor: WidgetStateProperty.all(
+                                  Colors.blue,
+                                ),
+                                padding: WidgetStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                    vertical: 5,
+                                    horizontal: 5,
                                   ),
                                 ),
+                                elevation: WidgetStateProperty.all(
+                                  10,
+                                ),
+                                shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      5,
+                                    ),
+                                  ),
+                                ),
+                                visualDensity: VisualDensity.compact,
                               ),
-                              visualDensity: VisualDensity.compact,
-                            ),
-                            child: const Text(
-                              "Remove",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                              child: const Text(
+                                "Edit",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            TextButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text("Remove Item"),
+                                        content: const Text(
+                                            "Are you sure you want to remove this item?"),
+                                        actionsAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              TodoItemsController.removeItem(
+                                                e["id"],
+                                              );
+
+                                              Navigator.of(context).pop();
+
+                                              getData();
+                                            },
+                                            child: const Text(
+                                              "Remove",
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text(
+                                              "Cancel",
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              },
+                              style: ButtonStyle(
+                                foregroundColor: WidgetStateProperty.all(
+                                  Colors.white,
+                                ),
+                                backgroundColor: WidgetStateProperty.all(
+                                  Colors.red,
+                                ),
+                                padding: WidgetStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                    vertical: 5,
+                                    horizontal: 5,
+                                  ),
+                                ),
+                                elevation: WidgetStateProperty.all(
+                                  10,
+                                ),
+                                shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      5,
+                                    ),
+                                  ),
+                                ),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              child: const Text(
+                                "Remove",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-            .toList(),
+              )
+              .toList(),
+        ),
       ),
     );
   }
