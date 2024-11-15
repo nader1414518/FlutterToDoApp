@@ -121,6 +121,48 @@ class AuthController {
     }
   }
 
+  static Future<Map<String, dynamic>> checkLogin() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var isLoggedIn = prefs.getBool("is_logged_in") ?? false;
+      if (isLoggedIn) {
+        var method = prefs.getString("login_method");
+        if (method == "Email") {
+          var email = prefs.getString("login_email");
+          var password = prefs.getString("login_password");
+
+          var loginRes = await login(
+            email!,
+            password!,
+          );
+
+          return loginRes;
+        } else if (method == "Google") {
+          var loginRes = await signInWithGoogle();
+
+          return loginRes;
+        } else {
+          return {
+            "result": true,
+            "message": "Welcome again!!",
+          };
+        }
+      } else {
+        return {
+          "result": false,
+          "message": "Please login with your account!!",
+        };
+      }
+    } catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
+    }
+  }
+
   static Future<void> logout() async {
     try {
       await Supabase.instance.client.auth.signOut();
