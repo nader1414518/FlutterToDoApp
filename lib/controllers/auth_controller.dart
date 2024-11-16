@@ -192,4 +192,22 @@ class AuthController {
       print(e.toString());
     }
   }
+
+  static Future<Map<String, dynamic>> forgotPasswordCallback(
+      String email) async {
+    try {
+      await Supabase.instance.client.auth.resetPasswordForEmail(email);
+
+      return {
+        "result": true,
+        "message": "Link has been sent successfully to your email!!",
+      };
+    } catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
+    }
+  }
 }

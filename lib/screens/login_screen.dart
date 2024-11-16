@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
 import 'package:to_do_app/screens/create_account_screen.dart';
+import 'package:to_do_app/screens/forgot_password_screen.dart';
 import 'package:to_do_app/screens/home_screen.dart';
 import 'package:to_do_app/utils/assets_utils.dart';
 
@@ -97,8 +98,22 @@ class LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                   controller: passController,
                 ),
-                const SizedBox(
-                  height: 20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ForgotPasswordScreen();
+                            },
+                          ),
+                        );
+                      },
+                      child: const Text("Forgot Password?"),
+                    ),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
