@@ -1,33 +1,35 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:to_do_app/utils/globals.dart';
 
 class TodoItemsController {
   static Future<Map<String, dynamic>> addToDoItem(
     Map<String, dynamic> data,
   ) async {
-    // data["id"] = Globals.items.length;
-
-    // Globals.items.add(data);
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      var uid = prefs.getString("uid") ?? "";
 
-      List<String> items = prefs.getStringList("todo_items") ?? [];
+      if (uid == "") {
+        return {
+          "result": false,
+          "message": "Please login again!!",
+        };
+      }
 
-      data["id"] = items.length;
+      data["dateAdded"] = DateTime.now().toIso8601String();
+      data["active"] = true;
+      data["archived"] = false;
+      data["userId"] = uid;
+      data["addedBy"] = uid;
 
-      String serializedItem = jsonEncode(data);
-
-      items.add(
-        serializedItem,
-      );
-
-      await prefs.setStringList("todo_items", items);
+      await Supabase.instance.client.from("todos").insert(data);
 
       return {
         "result": true,
-        "message": "Success",
+        "message": "Added successfully ... ",
       };
     } catch (e) {
       return {
@@ -39,41 +41,26 @@ class TodoItemsController {
 
   static Future<Map<String, dynamic>> editItem(
       int id, Map<String, dynamic> data) async {
-    // var items = Globals.items;
-    // for (int i = 0; i < items.length; i++) {
-    //   if (items[i]["id"] == id) {
-    //     items[i]["title"] = data["title"];
-    //     items[i]["description"] = data["description"];
-    //     break;
-    //   }
-    // }
-
-    // Globals.items = items;
-
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      List<String> items = prefs.getStringList("todo_items") ?? [];
+      var uid = prefs.getString("uid") ?? "";
 
-      for (int i = 0; i < items.length; i++) {
-        Map<String, dynamic> deserializedItem = Map<String, dynamic>.from(
-          jsonDecode(items[i]) as Map,
-        );
-
-        if (deserializedItem["id"] == id) {
-          items[i] = jsonEncode({
-            ...deserializedItem,
-            ...data,
-          });
-          break;
-        }
+      if (uid == "") {
+        return {
+          "result": false,
+          "message": "Please login again!!",
+        };
       }
 
-      await prefs.setStringList("todo_items", items);
+      data["dateUpdated"] = DateTime.now().toIso8601String();
+      data["updatedBy"] = uid;
+
+      await Supabase.instance.client.from("todos").update(data).eq("id", id);
 
       return {
         "result": true,
-        "message": "Success",
+        "message": "Updated successfully .. ",
       };
     } catch (e) {
       return {
@@ -84,26 +71,27 @@ class TodoItemsController {
   }
 
   static Future<Map<String, dynamic>> removeItem(int id) async {
-    // Globals.items =
-    //     Globals.items.where((element) => element["id"] != id).toList();
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      List<String> items = prefs.getStringList("todo_items") ?? [];
+      var uid = prefs.getString("uid") ?? "";
 
-      items = items
-          .map((element) => Map<String, dynamic>.from(
-                jsonDecode(element) as Map,
-              ))
-          .where((element) => element["id"] != id)
-          .map((element) => jsonEncode(element))
-          .toList();
+      if (uid == "") {
+        return {
+          "result": false,
+          "message": "Please login again!!",
+        };
+      }
 
-      await prefs.setStringList("todo_items", items);
+      await Supabase.instance.client.from("todos").update({
+        "active": false,
+        "dateUpdated": DateTime.now().toIso8601String(),
+        "updatedBy": uid,
+      }).eq("id", id);
 
       return {
         "result": true,
-        "message": "Success",
+        "message": "Removed successfully ... ",
       };
     } catch (e) {
       return {
@@ -115,19 +103,24 @@ class TodoItemsController {
 
   static Future<Map<String, dynamic>> getItem(int id) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var data = await Supabase.instance.client
+          .from("todos")
+          .select()
+          .eq("id", id)
+          .eq("active", true);
+      if (data.isEmpty) {
+        return {
+          "result": false,
+          "message": "No item found!!",
+        };
+      }
 
-      List<String> items = prefs.getStringList("todo_items") ?? [];
-
-      var item = items.firstWhere((element) =>
-          Map<String, dynamic>.from(jsonDecode(element) as Map)["id"] == id);
+      var item = data.first;
 
       return {
         "result": true,
-        "message": "Success",
-        "data": Map<String, dynamic>.from(
-          jsonDecode(item) as Map,
-        ),
+        "message": "Retrieved successfully ... ",
+        "data": item,
       };
     } catch (e) {
       print(e.toString());
@@ -139,19 +132,25 @@ class TodoItemsController {
   }
 
   static Future<List<Map<String, dynamic>>> getItems() async {
-    // return Globals.items;
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      List<String> items = prefs.getStringList("todo_items") ?? [];
+      var uid = prefs.getString("uid") ?? "";
 
-      return items
-          .map(
-            (element) => Map<String, dynamic>.from(
-              jsonDecode(element) as Map,
-            ),
-          )
-          .toList();
+      if (uid == "") {
+        return [];
+      }
+
+      var data = await Supabase.instance.client
+          .from("todos")
+          .select()
+          .eq("userId", uid)
+          .eq("active", true);
+      if (data.isEmpty) {
+        return [];
+      }
+
+      return data;
     } catch (e) {
       return [];
     }
