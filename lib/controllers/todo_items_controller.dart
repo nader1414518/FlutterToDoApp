@@ -155,4 +155,37 @@ class TodoItemsController {
       return [];
     }
   }
+
+  static Future<Map<String, dynamic>> updateScheduledNotification(
+      int id, String isoDate) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var uid = prefs.getString("uid") ?? "";
+
+      if (uid == "") {
+        return {
+          "result": false,
+          "message": "Please login again!!",
+        };
+      }
+
+      await Supabase.instance.client.from("todos").update({
+        "scheduledNotification": isoDate,
+        "updatedBy": uid,
+        "dateUpdated": DateTime.now().toIso8601String(),
+      }).eq("id", id);
+
+      return {
+        "result": true,
+        "message": "Scheduled successfully ... ",
+      };
+    } catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
+    }
+  }
 }

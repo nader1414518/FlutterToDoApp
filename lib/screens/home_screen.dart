@@ -137,6 +137,11 @@ class HomeScreenState extends State<HomeScreen> {
                             ),
                             IconButton(
                               onPressed: () {
+                                setState(() {
+                                  dateController.text =
+                                      e["scheduledNotification"].toString();
+                                });
+
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -254,6 +259,12 @@ class HomeScreenState extends State<HomeScreen> {
                                               ),
                                             );
 
+                                            await TodoItemsController
+                                                .updateScheduledNotification(
+                                              e["id"],
+                                              selectedDate!.toIso8601String(),
+                                            );
+
                                             Navigator.of(context).pop();
                                           },
                                           child: const Text(
@@ -273,9 +284,15 @@ class HomeScreenState extends State<HomeScreen> {
                                   },
                                 );
                               },
-                              icon: const Icon(
-                                Icons.alarm_add,
-                              ),
+                              icon: e["scheduledNotification"] == ""
+                                  ? const Icon(
+                                      Icons.alarm_add,
+                                      color: Colors.blue,
+                                    )
+                                  : const Icon(
+                                      Icons.history,
+                                      color: Colors.green,
+                                    ),
                             ),
                           ],
                         ),
