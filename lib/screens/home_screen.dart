@@ -4,6 +4,7 @@ import 'package:to_do_app/controllers/auth_controller.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
 import 'package:to_do_app/screens/add_item_screen.dart';
 import 'package:to_do_app/screens/edit_item_screen.dart';
+import 'package:to_do_app/screens/item_media_screen.dart';
 import 'package:to_do_app/screens/login_screen.dart';
 import 'package:to_do_app/utils/globals.dart';
 
@@ -133,6 +134,21 @@ class HomeScreenState extends State<HomeScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                                 overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return ItemMediaScreen(
+                                    id: e["id"],
+                                  );
+                                })).then((value) {
+                                  getData();
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.mediation,
                               ),
                             ),
                             IconButton(
