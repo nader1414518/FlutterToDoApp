@@ -4,7 +4,8 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
+import 'package:to_do_app/controllers/items_media_controller.dart';
 
 class ItemMediaScreen extends StatefulWidget {
   final int id;
@@ -21,12 +22,22 @@ class ItemMediaScreen extends StatefulWidget {
 class ItemMediaScreenState extends State<ItemMediaScreen> {
   bool isLoading = false;
 
+  List<Map<String, dynamic>> media = [];
+
   Future<void> getData() async {
     setState(() {
       isLoading = true;
     });
 
-    try {} catch (e) {
+    try {
+      var res = await ItemsMediaController.getItemMedia(
+        widget.id,
+      );
+
+      setState(() {
+        media = res;
+      });
+    } catch (e) {
       print(e.toString());
     }
 
@@ -69,7 +80,61 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
               ),
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
-              children: [],
+              children: [
+                ...media.map((e) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey,
+                        borderRadius: BorderRadius.circular(
+                          15,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: (MediaQuery.sizeOf(context).width - 60) *
+                                    0.6,
+                                child: Text(
+                                  e["filename"].toString().split("_")[1],
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              SizedBox(
+                                width: (MediaQuery.sizeOf(context).width - 60) *
+                                    0.3,
+                                child: Text(
+                                  e["extension"]
+                                      .toString()
+                                      .replaceAll(".", "")
+                                      .toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ],
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -100,15 +165,39 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
             var file = result.files.first;
 
             // Upload file to supabase
+            String extension = p.extension(file.path!);
+            String original_filename =
+                p.basename(file.path!).replaceAll(' ', '').replaceAll("_", "");
+            String filename =
+                "${DateTime.now().toIso8601String().replaceAll(".", "").replaceAll(":", "").replaceAll(" ", "")}_$original_filename";
             final Uint8List mediaFile = File(file.path!).readAsBytesSync();
             final String fullPath = await Supabase.instance.client.storage
                 .from('ItemsMedia')
                 .uploadBinary(
-                  "${DateTime.now().toIso8601String().replaceAll(".", "").replaceAll(":", "").replaceAll(" ", "")}_${basename(file.path!).replaceAll(' ', '')}",
+                  filename,
                   mediaFile,
                 );
 
-            print(fullPath);
+            // Store file in supbase database
+            var storeRes = await ItemsMediaController.storeMediaToItem({
+              "filename": filename,
+              "item_id": widget.id,
+              "extension": extension,
+              "path": fullPath,
+            });
+
+            // Refresh screen to get new media
+            if (storeRes["result"] == true) {
+              getData();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    storeRes["message"],
+                  ),
+                ),
+              );
+            }
           } catch (e) {
             print(e.toString());
           }
