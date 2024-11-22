@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:to_do_app/controllers/items_media_controller.dart';
+import 'package:to_do_app/screens/photo_viewer_screen.dart';
+import 'package:to_do_app/screens/video_player_screen.dart';
 
 class ItemMediaScreen extends StatefulWidget {
   final int id;
@@ -86,50 +88,89 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
                     padding: const EdgeInsets.symmetric(
                       vertical: 5,
                     ),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey,
-                        borderRadius: BorderRadius.circular(
-                          15,
+                    child: InkWell(
+                      onTap: () async {
+                        print(e);
+
+                        var itemUrl = await Supabase.instance.client.storage
+                            .from("ItemsMedia")
+                            .getPublicUrl(
+                              e["filename"].toString(),
+                            );
+
+                        if ([".jpeg", ".jpg", ".png"]
+                            .contains(e["extension"])) {
+                          // Go to photo view
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return PhotoViewerScreen(
+                                  url: itemUrl,
+                                );
+                              },
+                            ),
+                          );
+                        } else if ([".mp4", ".mkv", ".avi"]
+                            .contains(e["extension"])) {
+                          // Go to video view
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return VideoPlayerScreen(
+                                  url: itemUrl,
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.blueGrey,
+                          borderRadius: BorderRadius.circular(
+                            15,
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: (MediaQuery.sizeOf(context).width - 60) *
-                                    0.6,
-                                child: Text(
-                                  e["filename"].toString().split("_")[1],
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      (MediaQuery.sizeOf(context).width - 60) *
+                                          0.6,
+                                  child: Text(
+                                    e["filename"].toString().split("_")[1],
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              SizedBox(
-                                width: (MediaQuery.sizeOf(context).width - 60) *
-                                    0.3,
-                                child: Text(
-                                  e["extension"]
-                                      .toString()
-                                      .replaceAll(".", "")
-                                      .toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
+                                SizedBox(
+                                  width:
+                                      (MediaQuery.sizeOf(context).width - 60) *
+                                          0.3,
+                                  child: Text(
+                                    e["extension"]
+                                        .toString()
+                                        .replaceAll(".", "")
+                                        .toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.end,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.end,
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   );
