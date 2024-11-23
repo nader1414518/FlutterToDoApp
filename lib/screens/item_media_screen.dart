@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:to_do_app/controllers/items_media_controller.dart';
+import 'package:to_do_app/screens/pdf_viewer_screen.dart';
 import 'package:to_do_app/screens/photo_viewer_screen.dart';
 import 'package:to_do_app/screens/video_player_screen.dart';
 
@@ -117,6 +118,17 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return VideoPlayerScreen(
+                                  url: itemUrl,
+                                );
+                              },
+                            ),
+                          );
+                        } else if ([".pdf"].contains(e["extension"])) {
+                          // Go to video view
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return PDFViewerScreen(
                                   url: itemUrl,
                                 );
                               },
