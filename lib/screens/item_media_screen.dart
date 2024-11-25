@@ -3,12 +3,14 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get_thumbnail_video/index.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:to_do_app/controllers/items_media_controller.dart';
 import 'package:to_do_app/screens/pdf_viewer_screen.dart';
 import 'package:to_do_app/screens/photo_viewer_screen.dart';
 import 'package:to_do_app/screens/video_player_screen.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
 
 class ItemMediaScreen extends StatefulWidget {
   final int id;
@@ -180,13 +182,105 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
                                   ),
                                 ),
                               ],
-                            )
+                            ),
+                            // const Divider(),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            [".mp4", ".mkv", ".avi"].contains(e["extension"])
+                                ? Container(
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          e["snapshot_url"],
+                                        ),
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  )
+                                : [".jpeg", ".jpg", ".png"]
+                                        .contains(e["extension"])
+                                    ? Container(
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                              e["url"],
+                                            ),
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
+                            const Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+
+                                    try {
+                                      var res = await ItemsMediaController
+                                          .removeMedia(
+                                        e["id"],
+                                      );
+
+                                      if (res["result"] == true) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              res["message"],
+                                            ),
+                                          ),
+                                        );
+
+                                        setState(() {
+                                          media = media
+                                              .where((element) =>
+                                                  element["id"] != e["id"])
+                                              .toList();
+                                        });
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              res["message"],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      print(e.toString());
+                                    }
+
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                  },
+                                  child: const Text(
+                                    "Remove",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
                     ),
                   );
                 }).toList(),
+                const SizedBox(
+                  height: 80,
+                ),
               ],
             ),
       floatingActionButton: FloatingActionButton(
@@ -231,12 +325,45 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
                   mediaFile,
                 );
 
+            var itemUrl = await Supabase.instance.client.storage
+                .from("ItemsMedia")
+                .getPublicUrl(
+                  filename,
+                );
+
+            String snapshotUrl = "";
+
+            if ([".mp4", ".mkv", ".avi"].contains(extension)) {
+              final uint8list = await VideoThumbnail.thumbnailData(
+                video: itemUrl,
+                imageFormat: ImageFormat.JPEG,
+                maxWidth:
+                    128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+                quality: 25,
+              );
+
+              final String snapshotPath = await Supabase.instance.client.storage
+                  .from('ItemsMedia')
+                  .uploadBinary(
+                    "snapshot_$filename",
+                    uint8list,
+                  );
+
+              snapshotUrl = await Supabase.instance.client.storage
+                  .from("ItemsMedia")
+                  .getPublicUrl(
+                    "snapshot_$filename",
+                  );
+            }
+
             // Store file in supbase database
             var storeRes = await ItemsMediaController.storeMediaToItem({
               "filename": filename,
               "item_id": widget.id,
               "extension": extension,
               "path": fullPath,
+              "url": itemUrl,
+              "snapshot_url": snapshotUrl,
             });
 
             // Refresh screen to get new media
