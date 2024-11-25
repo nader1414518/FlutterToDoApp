@@ -50,4 +50,23 @@ class ItemsMediaController {
       return [];
     }
   }
+
+  static Future<Map<String, dynamic>> removeMedia(int mediaId) async {
+    try {
+      var res = await Supabase.instance.client.from("todos_media").update({
+        "active": false,
+      }).eq("id", mediaId);
+
+      return {
+        "result": true,
+        "message": "Removed successfully ... ",
+      };
+    } catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
+    }
+  }
 }
