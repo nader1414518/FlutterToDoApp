@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/screens/core_home_screen.dart';
 import 'package:to_do_app/screens/home_screen.dart';
 import 'package:to_do_app/screens/login_screen.dart';
 import 'package:to_do_app/utils/assets_utils.dart';
@@ -25,7 +26,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
-              return HomeScreen();
+              return CoreHomeScreen();
             },
           ),
         );
