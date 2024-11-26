@@ -279,115 +279,123 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
                   );
                 }).toList(),
                 const SizedBox(
-                  height: 80,
+                  height: 180,
                 ),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          setState(() {
-            isLoading = true;
-          });
-
-          try {
-            FilePickerResult? result = await FilePicker.platform.pickFiles(
-              allowMultiple: false,
-              type: FileType.custom,
-              allowedExtensions: [
-                'jpg',
-                'pdf',
-                'doc',
-                'jpeg',
-                'mp4',
-                'avi',
-                '3gp',
-                'mkv',
-              ],
-            );
-
-            if (result!.files.isEmpty) {
-              return;
-            }
-
-            var file = result.files.first;
-
-            // Upload file to supabase
-            String extension = p.extension(file.path!);
-            String original_filename =
-                p.basename(file.path!).replaceAll(' ', '').replaceAll("_", "");
-            String filename =
-                "${DateTime.now().toIso8601String().replaceAll(".", "").replaceAll(":", "").replaceAll(" ", "")}_$original_filename";
-            final Uint8List mediaFile = File(file.path!).readAsBytesSync();
-            final String fullPath = await Supabase.instance.client.storage
-                .from('ItemsMedia')
-                .uploadBinary(
-                  filename,
-                  mediaFile,
-                );
-
-            var itemUrl = await Supabase.instance.client.storage
-                .from("ItemsMedia")
-                .getPublicUrl(
-                  filename,
-                );
-
-            String snapshotUrl = "";
-
-            if ([".mp4", ".mkv", ".avi"].contains(extension)) {
-              final uint8list = await VideoThumbnail.thumbnailData(
-                video: itemUrl,
-                imageFormat: ImageFormat.JPEG,
-                maxWidth:
-                    128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
-                quality: 25,
-              );
-
-              final String snapshotPath = await Supabase.instance.client.storage
-                  .from('ItemsMedia')
-                  .uploadBinary(
-                    "snapshot_$filename",
-                    uint8list,
-                  );
-
-              snapshotUrl = await Supabase.instance.client.storage
-                  .from("ItemsMedia")
-                  .getPublicUrl(
-                    "snapshot_$filename",
-                  );
-            }
-
-            // Store file in supbase database
-            var storeRes = await ItemsMediaController.storeMediaToItem({
-              "filename": filename,
-              "item_id": widget.id,
-              "extension": extension,
-              "path": fullPath,
-              "url": itemUrl,
-              "snapshot_url": snapshotUrl,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(
+          bottom: kBottomNavigationBarHeight * 1.25,
+        ),
+        child: FloatingActionButton(
+          onPressed: () async {
+            setState(() {
+              isLoading = true;
             });
 
-            // Refresh screen to get new media
-            if (storeRes["result"] == true) {
-              getData();
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    storeRes["message"],
-                  ),
-                ),
+            try {
+              FilePickerResult? result = await FilePicker.platform.pickFiles(
+                allowMultiple: false,
+                type: FileType.custom,
+                allowedExtensions: [
+                  'jpg',
+                  'pdf',
+                  'doc',
+                  'jpeg',
+                  'mp4',
+                  'avi',
+                  '3gp',
+                  'mkv',
+                ],
               );
-            }
-          } catch (e) {
-            print(e.toString());
-          }
 
-          setState(() {
-            isLoading = false;
-          });
-        },
-        child: const Icon(
-          Icons.add,
+              if (result!.files.isEmpty) {
+                return;
+              }
+
+              var file = result.files.first;
+
+              // Upload file to supabase
+              String extension = p.extension(file.path!);
+              String original_filename = p
+                  .basename(file.path!)
+                  .replaceAll(' ', '')
+                  .replaceAll("_", "");
+              String filename =
+                  "${DateTime.now().toIso8601String().replaceAll(".", "").replaceAll(":", "").replaceAll(" ", "")}_$original_filename";
+              final Uint8List mediaFile = File(file.path!).readAsBytesSync();
+              final String fullPath = await Supabase.instance.client.storage
+                  .from('ItemsMedia')
+                  .uploadBinary(
+                    filename,
+                    mediaFile,
+                  );
+
+              var itemUrl = await Supabase.instance.client.storage
+                  .from("ItemsMedia")
+                  .getPublicUrl(
+                    filename,
+                  );
+
+              String snapshotUrl = "";
+
+              if ([".mp4", ".mkv", ".avi"].contains(extension)) {
+                final uint8list = await VideoThumbnail.thumbnailData(
+                  video: itemUrl,
+                  imageFormat: ImageFormat.JPEG,
+                  maxWidth:
+                      128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+                  quality: 25,
+                );
+
+                final String snapshotPath = await Supabase
+                    .instance.client.storage
+                    .from('ItemsMedia')
+                    .uploadBinary(
+                      "snapshot_$filename",
+                      uint8list,
+                    );
+
+                snapshotUrl = await Supabase.instance.client.storage
+                    .from("ItemsMedia")
+                    .getPublicUrl(
+                      "snapshot_$filename",
+                    );
+              }
+
+              // Store file in supbase database
+              var storeRes = await ItemsMediaController.storeMediaToItem({
+                "filename": filename,
+                "item_id": widget.id,
+                "extension": extension,
+                "path": fullPath,
+                "url": itemUrl,
+                "snapshot_url": snapshotUrl,
+              });
+
+              // Refresh screen to get new media
+              if (storeRes["result"] == true) {
+                getData();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      storeRes["message"],
+                    ),
+                  ),
+                );
+              }
+            } catch (e) {
+              print(e.toString());
+            }
+
+            setState(() {
+              isLoading = false;
+            });
+          },
+          child: const Icon(
+            Icons.add,
+          ),
         ),
       ),
     );

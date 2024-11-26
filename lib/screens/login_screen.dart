@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/screens/core_home_screen.dart';
 import 'package:to_do_app/screens/create_account_screen.dart';
 import 'package:to_do_app/screens/forgot_password_screen.dart';
 import 'package:to_do_app/screens/home_screen.dart';
@@ -156,7 +157,7 @@ class LoginScreenState extends State<LoginScreen> {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return HomeScreen();
+                                  return CoreHomeScreen();
                                 },
                               ),
                             );
@@ -230,7 +231,7 @@ class LoginScreenState extends State<LoginScreen> {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return HomeScreen();
+                                  return CoreHomeScreen();
                                 },
                               ),
                             );
