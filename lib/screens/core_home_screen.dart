@@ -64,7 +64,7 @@ class CoreHomeScreenState extends State<CoreHomeScreen> {
         handleAndroidBackButtonPress: true, // Default is true.
         resizeToAvoidBottomInset:
             true, // This needs to be true if you want to move up the screen on a non-scrollable screen when keyboard appears. Default is true.
-        stateManagement: true, // Default is true.
+        stateManagement: false, // Default is true.
         hideNavigationBarWhenKeyboardAppears: true,
         // popBehaviorOnSelectedNavBarItemPress: PopActionScreensType.all,
         popBehaviorOnSelectedNavBarItemPress: PopBehavior.all,
