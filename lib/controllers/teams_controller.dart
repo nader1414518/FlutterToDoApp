@@ -142,6 +142,16 @@ class TeamsController {
 
   static Future<Map<String, dynamic>> getTeam(int id) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var uid = prefs.getString("uid") ?? "";
+      if (uid == "") {
+        return {
+          "result": false,
+          "message": "Please login again!!",
+        };
+      }
+
       var res =
           await Supabase.instance.client.from("teams").select().eq("id", id);
 
@@ -152,10 +162,17 @@ class TeamsController {
         };
       }
 
+      var data = res.first;
+      if (data["leaderId"] == uid) {
+        data["isMine"] = true;
+      } else {
+        data["isMine"] = false;
+      }
+
       return {
         "result": true,
         "message": "Retrieved successfully ... ",
-        "data": res.first,
+        "data": data,
       };
     } catch (e) {
       return {
@@ -209,13 +226,28 @@ class TeamsController {
 
   static Future<List<Map<String, dynamic>>> getTeamItems(int teamId) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var uid = prefs.getString("uid") ?? "";
+      if (uid == "") {
+        return [];
+      }
+
       var res = await Supabase.instance.client
           .from("todos")
           .select()
           .eq("teamId", teamId)
           .eq("active", true);
 
-      return res;
+      return res.map((e) {
+        if (e["userId"] == uid) {
+          e["isMine"] = true;
+        } else {
+          e["isMine"] = false;
+        }
+
+        return e;
+      }).toList();
     } catch (e) {
       return [];
     }

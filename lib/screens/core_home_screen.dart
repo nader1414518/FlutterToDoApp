@@ -12,10 +12,20 @@ class CoreHomeScreen extends StatefulWidget {
 }
 
 class CoreHomeScreenState extends State<CoreHomeScreen> {
+  bool isShown = true;
+
+  toggleNavbar(bool value) {
+    setState(() {
+      isShown = value;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    isShown = true;
   }
 
   @override
@@ -31,9 +41,13 @@ class CoreHomeScreenState extends State<CoreHomeScreen> {
         context,
         screens: [
           HomeScreen(),
-          TeamsScreen(),
+          TeamsScreen(
+            toggleNavbar: toggleNavbar,
+          ),
           CalendarScreen(),
-          ProfileScreen(),
+          ProfileScreen(
+            toggleNavbar: toggleNavbar,
+          ),
         ],
         items: [
           PersistentBottomNavBarItem(
@@ -70,7 +84,7 @@ class CoreHomeScreenState extends State<CoreHomeScreen> {
         popBehaviorOnSelectedNavBarItemPress: PopBehavior.all,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         backgroundColor: Colors.grey.shade900,
-        isVisible: true,
+        isVisible: isShown,
         animationSettings: const NavBarAnimationSettings(
           navBarItemAnimation: ItemAnimationSettings(
             // Navigation Bar's items animation properties.
@@ -94,8 +108,8 @@ class CoreHomeScreenState extends State<CoreHomeScreen> {
           ),
           colorBehindNavBar: Colors.transparent,
         ),
-        margin: const EdgeInsets.only(
-          bottom: 10,
+        margin: EdgeInsets.only(
+          bottom: isShown ? 10 : 0,
           left: 10,
           right: 10,
         ),

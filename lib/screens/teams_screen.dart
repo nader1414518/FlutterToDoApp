@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/controllers/teams_controller.dart';
 import 'package:to_do_app/screens/teams/create_team_screen.dart';
 import 'package:to_do_app/screens/teams/edit_team_screen.dart';
+import 'package:to_do_app/screens/teams/join_team_screen.dart';
+import 'package:to_do_app/screens/teams/team_screen.dart';
 
 class TeamsScreen extends StatefulWidget {
+  Function(bool) toggleNavbar;
+
+  TeamsScreen({
+    super.key,
+    required this.toggleNavbar,
+  });
+
   @override
   TeamsScreenState createState() => TeamsScreenState();
 }
@@ -68,7 +77,19 @@ class TeamsScreenState extends State<TeamsScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              widget.toggleNavbar(false);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return JoinTeamScreen();
+                  },
+                ),
+              ).then((value) {
+                widget.toggleNavbar(true);
+                getData();
+              });
+            },
             icon: const Icon(
               Icons.add_circle_outline,
             ),
@@ -92,134 +113,150 @@ class TeamsScreenState extends State<TeamsScreen> {
                     padding: const EdgeInsets.symmetric(
                       vertical: 5,
                     ),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          15,
+                    child: InkWell(
+                      onTap: () {
+                        widget.toggleNavbar(false);
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return TeamScreen(
+                            id: e["id"],
+                          );
+                        })).then((value) {
+                          widget.toggleNavbar(true);
+                          getData();
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            15,
+                          ),
+                          color: Colors.blueGrey.withOpacity(
+                            0.5,
+                          ),
                         ),
-                        color: Colors.blueGrey.withOpacity(
-                          0.5,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: (MediaQuery.sizeOf(context).width - 40) *
-                                    0.9,
-                                child: Text(
-                                  e["title"].toString(),
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: (MediaQuery.sizeOf(context).width - 40) *
-                                    0.9,
-                                child: Text(
-                                  e["description"].toString(),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          e["isMine"] == true
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return EditTeamScreen(
-                                            teamId: e["id"],
-                                          );
-                                        })).then(
-                                          (value) {
-                                            getData();
-                                          },
-                                        );
-                                      },
-                                      child: const Text(
-                                        "Edit",
-                                      ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width:
+                                      (MediaQuery.sizeOf(context).width - 40) *
+                                          0.9,
+                                  child: Text(
+                                    e["title"].toString(),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    TextButton(
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title:
-                                                    const Text("Remove Item"),
-                                                content: const Text(
-                                                    "Are you sure you want to remove this item?"),
-                                                actionsAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      TeamsController
-                                                          .removeTeam(
-                                                        e["id"],
-                                                      );
-
-                                                      Navigator.of(context)
-                                                          .pop();
-
-                                                      getData();
-                                                    },
-                                                    child: const Text(
-                                                      "Remove",
-                                                      style: TextStyle(
-                                                        color: Colors.red,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: const Text(
-                                                      "Cancel",
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            });
-                                      },
-                                      child: const Text(
-                                        "Remove",
-                                        style: TextStyle(
-                                          color: Colors.red,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width:
+                                      (MediaQuery.sizeOf(context).width - 40) *
+                                          0.9,
+                                  child: Text(
+                                    e["description"].toString(),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            e["isMine"] == true
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return EditTeamScreen(
+                                              teamId: e["id"],
+                                            );
+                                          })).then(
+                                            (value) {
+                                              getData();
+                                            },
+                                          );
+                                        },
+                                        child: const Text(
+                                          "Edit",
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                )
-                              : Container(),
-                        ],
+                                      TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title:
+                                                      const Text("Remove Item"),
+                                                  content: const Text(
+                                                      "Are you sure you want to remove this item?"),
+                                                  actionsAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        TeamsController
+                                                            .removeTeam(
+                                                          e["id"],
+                                                        );
+
+                                                        Navigator.of(context)
+                                                            .pop();
+
+                                                        getData();
+                                                      },
+                                                      child: const Text(
+                                                        "Remove",
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: const Text(
+                                                        "Cancel",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: const Text(
+                                          "Remove",
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
+                          ],
+                        ),
                       ),
                     ),
                   );
