@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
 
 class AddItemScreen extends StatefulWidget {
+  int? teamId;
+
+  AddItemScreen({super.key, this.teamId});
+
   @override
   AddItemScreenState createState() => AddItemScreenState();
 }
@@ -79,6 +83,7 @@ class AddItemScreenState extends State<AddItemScreen> {
                   await TodoItemsController.addToDoItem({
                     "title": titleController.text,
                     "description": descriptionController.text,
+                    "teamId": widget.teamId,
                   });
 
                   Navigator.of(context).pop();

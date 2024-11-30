@@ -145,7 +145,8 @@ class TodoItemsController {
           .from("todos")
           .select()
           .eq("userId", uid)
-          .eq("active", true);
+          .eq("active", true)
+          .isFilter("teamId", null);
       if (data.isEmpty) {
         return [];
       }
