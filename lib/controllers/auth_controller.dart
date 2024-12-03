@@ -210,4 +210,101 @@ class AuthController {
       };
     }
   }
+
+  static Future<Map<String, dynamic>> updateUserEmail(String email) async {
+    try {
+      var res = await Supabase.instance.client.auth.updateUser(
+        UserAttributes(
+          email: email.toLowerCase().trim(),
+        ),
+      );
+
+      if (res.user == null) {
+        return {
+          "result": false,
+          "message": "Something went wrong!!",
+        };
+      }
+
+      return {
+        "result": true,
+        "message": "Updated successfully ... ",
+      };
+    } on AuthException catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.message.toString(),
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateUserPassword(
+      String password) async {
+    try {
+      var res = await Supabase.instance.client.auth.updateUser(
+        UserAttributes(
+          password: password,
+        ),
+      );
+
+      if (res.user == null) {
+        return {
+          "result": false,
+          "message": "Something went wrong!!",
+        };
+      }
+
+      return {
+        "result": true,
+        "message": "Updated successfully ... ",
+      };
+    } on AuthException catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.message.toString(),
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateUserInfo(
+      Map<String, dynamic> data) async {
+    try {
+      var dataRes = await Supabase.instance.client.auth.getUser();
+      if (dataRes.user == null) {
+        return {
+          "result": false,
+          "message": "Please login again!!",
+        };
+      }
+
+      var res = await Supabase.instance.client.auth.updateUser(
+        UserAttributes(
+          data: {
+            ...dataRes.user!.toJson(),
+            ...data,
+          },
+        ),
+      );
+
+      if (res.user == null) {
+        return {
+          "result": false,
+          "message": "Something went wrong!!",
+        };
+      }
+
+      return {
+        "result": true,
+        "message": "Updated successfully ... ",
+      };
+    } catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
+    }
+  }
 }
