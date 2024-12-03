@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/screens/change_email_screen.dart';
+import 'package:to_do_app/screens/change_password_screen.dart';
 import 'package:to_do_app/screens/login_screen.dart';
 import 'package:to_do_app/utils/assets_utils.dart';
 
@@ -44,7 +46,11 @@ class ProfileScreenState extends State<ProfileScreen> {
         print(res["data"]);
 
         setState(() {
-          email = userMetadata["email"].toString();
+          if (res["data"]["new_email"] == null) {
+            email = res["data"]["email"].toString();
+          } else {
+            email = res["data"]["new_email"].toString();
+          }
           phone = userMetadata["phone"] == null
               ? ""
               : userMetadata["phone"].toString();
@@ -345,7 +351,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         FilledButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ChangeEmailScreen();
+                            })).then(
+                              (value) {
+                                getData();
+                              },
+                            );
+                          },
                           child: const Text(
                             "Change My Email",
                           ),
@@ -359,7 +374,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         FilledButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ChangePasswordScreen();
+                            })).then(
+                              (value) {
+                                getData();
+                              },
+                            );
+                          },
                           child: const Text(
                             "Change My Password",
                           ),
