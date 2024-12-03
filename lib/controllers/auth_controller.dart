@@ -299,11 +299,35 @@ class AuthController {
         "result": true,
         "message": "Updated successfully ... ",
       };
-    } catch (e) {
+    } on AuthException catch (e) {
       print(e.toString());
       return {
         "result": false,
-        "message": e.toString(),
+        "message": e.message.toString(),
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> getCurrentUserData() async {
+    try {
+      var userRes = await Supabase.instance.client.auth.getUser();
+      if (userRes.user == null) {
+        return {
+          "result": false,
+          "message": "Please login again!!",
+        };
+      }
+
+      return {
+        "result": true,
+        "message": "Retrieved successfully ... ",
+        "data": userRes.user!.toJson(),
+      };
+    } on AuthException catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.message.toString(),
       };
     }
   }
