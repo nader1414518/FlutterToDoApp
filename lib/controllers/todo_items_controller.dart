@@ -189,4 +189,71 @@ class TodoItemsController {
       };
     }
   }
+
+  static Future<Map<String, dynamic>> addToFavorites(int itemId) async {
+    try {
+      await Supabase.instance.client.from("todos").update({
+        "isFavorite": true,
+        "dateUpdated": DateTime.now().toIso8601String(),
+      }).eq("id", itemId);
+
+      return {
+        "result": true,
+        "message": "Added to favorites ... ",
+      };
+    } catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> removeFromFavorites(int itemId) async {
+    try {
+      await Supabase.instance.client.from("todos").update({
+        "isFavorite": false,
+        "dateUpdated": DateTime.now().toIso8601String(),
+      }).eq("id", itemId);
+
+      return {
+        "result": true,
+        "message": "Removed from favorites ... ",
+      };
+    } catch (e) {
+      print(e.toString());
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getFavoriteItems() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var uid = prefs.getString("uid") ?? "";
+
+      if (uid == "") {
+        return [];
+      }
+
+      var data = await Supabase.instance.client
+          .from("todos")
+          .select()
+          .eq("userId", uid)
+          .eq("active", true)
+          .eq("isFavorite", true)
+          .isFilter("teamId", null);
+      if (data.isEmpty) {
+        return [];
+      }
+
+      return data;
+    } catch (e) {
+      return [];
+    }
+  }
 }
