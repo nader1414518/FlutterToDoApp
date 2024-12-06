@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:to_do_app/screens/calendar_screen.dart';
+import 'package:to_do_app/screens/favorites_screen.dart';
 import 'package:to_do_app/screens/home_screen.dart';
 import 'package:to_do_app/screens/profile_screen.dart';
 import 'package:to_do_app/screens/teams_screen.dart';
@@ -45,6 +46,7 @@ class CoreHomeScreenState extends State<CoreHomeScreen> {
             toggleNavbar: toggleNavbar,
           ),
           CalendarScreen(),
+          FavoritesScreen(),
           ProfileScreen(
             toggleNavbar: toggleNavbar,
           ),
@@ -65,6 +67,12 @@ class CoreHomeScreenState extends State<CoreHomeScreen> {
           PersistentBottomNavBarItem(
             icon: const Icon(CupertinoIcons.calendar),
             title: ("Calendar"),
+            activeColorPrimary: CupertinoColors.activeBlue,
+            inactiveColorPrimary: CupertinoColors.systemGrey,
+          ),
+          PersistentBottomNavBarItem(
+            icon: const Icon(CupertinoIcons.square_favorites_alt),
+            title: ("Favorites"),
             activeColorPrimary: CupertinoColors.activeBlue,
             inactiveColorPrimary: CupertinoColors.systemGrey,
           ),
