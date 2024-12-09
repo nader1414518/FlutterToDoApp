@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:to_do_app/screens/home_screen.dart';
@@ -57,6 +58,8 @@ void main() async {
   } catch (e) {
     print(e.toString());
   }
+
+  await initializeDateFormatting();
 
   runApp(const MyApp());
 }
