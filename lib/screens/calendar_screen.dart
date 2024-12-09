@@ -77,6 +77,8 @@ class CalendarScreenState extends State<CalendarScreen> {
         physics: const ClampingScrollPhysics(),
         children: [
           TableCalendar(
+            daysOfWeekVisible: true,
+            locale: "ar_EG",
             firstDay: DateTime.now().subtract(
               const Duration(
                 days: 1200,
@@ -85,6 +87,54 @@ class CalendarScreenState extends State<CalendarScreen> {
             lastDay: DateTime.now().add(
               const Duration(
                 days: 1200,
+              ),
+            ),
+            weekendDays: [],
+            calendarStyle: CalendarStyle(
+              cellPadding: const EdgeInsets.all(5),
+              markerDecoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(
+                  30,
+                ),
+              ),
+              markerSize: 5,
+              todayDecoration: BoxDecoration(
+                color: Colors.blueGrey.withOpacity(
+                  0.2,
+                ),
+                borderRadius: BorderRadius.circular(
+                  30,
+                ),
+              ),
+              selectedDecoration: BoxDecoration(
+                color: Colors.blueGrey.withOpacity(
+                  0.5,
+                ),
+                // borderRadius: BorderRadius.circular(
+                //   30,
+                // ),
+              ),
+              tableBorder: TableBorder(
+                borderRadius: BorderRadius.circular(
+                  15,
+                ),
+                top: const BorderSide(
+                  width: 2,
+                  color: Colors.white,
+                ),
+                bottom: const BorderSide(
+                  width: 2,
+                  color: Colors.white,
+                ),
+                left: const BorderSide(
+                  width: 2,
+                  color: Colors.white,
+                ),
+                right: const BorderSide(
+                  width: 2,
+                  color: Colors.white,
+                ),
               ),
             ),
             focusedDay: _focusedDay,
@@ -162,6 +212,9 @@ class CalendarScreenState extends State<CalendarScreen> {
                     decoration: BoxDecoration(
                       color: Colors.blueGrey.withOpacity(
                         0.5,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        15,
                       ),
                     ),
                     padding: const EdgeInsets.all(10),
