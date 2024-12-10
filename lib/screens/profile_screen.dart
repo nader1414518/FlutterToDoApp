@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/main.dart';
 import 'package:to_do_app/screens/change_email_screen.dart';
 import 'package:to_do_app/screens/change_password_screen.dart';
 import 'package:to_do_app/screens/login_screen.dart';
@@ -29,6 +30,13 @@ class ProfileScreenState extends State<ProfileScreen> {
   String fullName = "";
   String avatarUrl = "";
 
+  List<String> locales = [
+    "English",
+    "العربية",
+  ];
+
+  String? currentLocale;
+
   Map<String, dynamic> currentUserData = {};
 
   Future<void> getData() async {
@@ -37,13 +45,24 @@ class ProfileScreenState extends State<ProfileScreen> {
     });
 
     try {
+      var langCode = localization.currentLocale!.languageCode;
+      if (langCode == "en") {
+        setState(() {
+          currentLocale = "English";
+        });
+      } else if (langCode == "ar") {
+        setState(() {
+          currentLocale = "العربية";
+        });
+      }
+
       var res = await AuthController.getCurrentUserData();
       if (res["result"] == true) {
         var userMetadata = Map<String, dynamic>.from(
           res["data"]["user_metadata"] as Map,
         );
 
-        print(res["data"]);
+        // print(res["data"]);
 
         setState(() {
           if (res["data"]["new_email"] == null) {
@@ -77,6 +96,8 @@ class ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    currentLocale = locales.first;
 
     getData();
   }
@@ -387,6 +408,37 @@ class ProfileScreenState extends State<ProfileScreen> {
                           child: const Text(
                             "Change My Password",
                           ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DropdownButton<String>(
+                          value: currentLocale,
+                          items: locales.map<DropdownMenuItem<String>>((e) {
+                            return DropdownMenuItem(
+                              value: e,
+                              child: Text(
+                                e,
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              currentLocale = value!;
+                            });
+
+                            if (value == "English") {
+                              localization.translate("en");
+                            } else if (value == "العربية") {
+                              localization.translate("ar");
+                            }
+                          },
                         ),
                       ],
                     ),
