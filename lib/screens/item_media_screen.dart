@@ -3,10 +3,13 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path/path.dart' as p;
 import 'package:to_do_app/controllers/items_media_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 import 'package:to_do_app/screens/pdf_viewer_screen.dart';
 import 'package:to_do_app/screens/photo_viewer_screen.dart';
 import 'package:to_do_app/screens/video_player_screen.dart';
@@ -70,8 +73,10 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text(
-          "Media",
+        title: Text(
+          AppLocale.media_label.getString(
+            context,
+          ),
         ),
       ),
       body: isLoading
@@ -263,9 +268,11 @@ class ItemMediaScreenState extends State<ItemMediaScreen> {
                                       isLoading = false;
                                     });
                                   },
-                                  child: const Text(
-                                    "Remove",
-                                    style: TextStyle(
+                                  child: Text(
+                                    AppLocale.remove_label.getString(
+                                      context,
+                                    ),
+                                    style: const TextStyle(
                                       color: Colors.red,
                                     ),
                                   ),

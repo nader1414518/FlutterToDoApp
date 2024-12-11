@@ -1,7 +1,9 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/teams_controller.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
 import 'package:to_do_app/screens/add_item_screen.dart';
 import 'package:to_do_app/screens/edit_item_screen.dart';
 import 'package:to_do_app/screens/item_media_screen.dart';
@@ -93,8 +95,10 @@ class TeamScreenState extends State<TeamScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Team Page",
+        title: Text(
+          AppLocale.team_label.getString(
+            context,
+          ),
         ),
       ),
       body: isLoading
@@ -132,9 +136,11 @@ class TeamScreenState extends State<TeamScreen> {
                               SizedBox(
                                 width: (MediaQuery.sizeOf(context).width - 60) *
                                     0.45,
-                                child: const Text(
-                                  "Team Name",
-                                  style: TextStyle(
+                                child: Text(
+                                  AppLocale.team_name_label.getString(
+                                    context,
+                                  ),
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -154,9 +160,11 @@ class TeamScreenState extends State<TeamScreen> {
                               SizedBox(
                                 width: (MediaQuery.sizeOf(context).width - 60) *
                                     0.45,
-                                child: const Text(
-                                  "Team Code",
-                                  style: TextStyle(
+                                child: Text(
+                                  AppLocale.team_code_label.getString(
+                                    context,
+                                  ),
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -498,9 +506,11 @@ class TeamScreenState extends State<TeamScreen> {
                                             visualDensity:
                                                 VisualDensity.compact,
                                           ),
-                                          child: const Text(
-                                            "Edit",
-                                            style: TextStyle(
+                                          child: Text(
+                                            AppLocale.edit_label.getString(
+                                              context,
+                                            ),
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -508,48 +518,63 @@ class TeamScreenState extends State<TeamScreen> {
                                         TextButton(
                                           onPressed: () {
                                             showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                        "Remove Item"),
-                                                    content: const Text(
-                                                        "Are you sure you want to remove this item?"),
-                                                    actionsAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          TodoItemsController
-                                                              .removeItem(
-                                                            e["id"],
-                                                          );
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: Text(
+                                                    AppLocale.remove_item_label
+                                                        .getString(
+                                                      context,
+                                                    ),
+                                                  ),
+                                                  content: Text(
+                                                    AppLocale.remove_item_desc
+                                                        .getString(
+                                                      context,
+                                                    ),
+                                                  ),
+                                                  actionsAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        TodoItemsController
+                                                            .removeItem(
+                                                          e["id"],
+                                                        );
 
-                                                          Navigator.of(context)
-                                                              .pop();
+                                                        Navigator.of(context)
+                                                            .pop();
 
-                                                          getData();
-                                                        },
-                                                        child: const Text(
-                                                          "Remove",
-                                                          style: TextStyle(
-                                                            color: Colors.red,
-                                                          ),
+                                                        getData();
+                                                      },
+                                                      child: Text(
+                                                        AppLocale.remove_label
+                                                            .getString(
+                                                          context,
+                                                        ),
+                                                        style: const TextStyle(
+                                                          color: Colors.red,
                                                         ),
                                                       ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: const Text(
-                                                          "Cancel",
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        AppLocale.cancel_label
+                                                            .getString(
+                                                          context,
                                                         ),
                                                       ),
-                                                    ],
-                                                  );
-                                                });
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
                                           },
                                           style: ButtonStyle(
                                             foregroundColor:
@@ -580,9 +605,11 @@ class TeamScreenState extends State<TeamScreen> {
                                             visualDensity:
                                                 VisualDensity.compact,
                                           ),
-                                          child: const Text(
-                                            "Remove",
-                                            style: TextStyle(
+                                          child: Text(
+                                            AppLocale.remove_label.getString(
+                                              context,
+                                            ),
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/teams_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 
 class EditTeamScreen extends StatefulWidget {
   final int teamId;
@@ -64,8 +67,10 @@ class EditTeamScreenState extends State<EditTeamScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text(
-          "Edit Team",
+        title: Text(
+          AppLocale.edit_label.getString(
+            context,
+          ),
         ),
       ),
       body: isLoading
@@ -91,7 +96,9 @@ class EditTeamScreenState extends State<EditTeamScreen> {
                     contentPadding: const EdgeInsets.all(
                       10,
                     ),
-                    labelText: "Title",
+                    labelText: AppLocale.title_label.getString(
+                      context,
+                    ),
                   ),
                   controller: titleController,
                 ),
@@ -109,7 +116,9 @@ class EditTeamScreenState extends State<EditTeamScreen> {
                     contentPadding: const EdgeInsets.all(
                       10,
                     ),
-                    labelText: "Description",
+                    labelText: AppLocale.description_label.getString(
+                      context,
+                    ),
                   ),
                   minLines: 1,
                   maxLines: 10,
@@ -141,8 +150,10 @@ class EditTeamScreenState extends State<EditTeamScreen> {
 
                         Navigator.of(context).pop();
                       },
-                      child: const Text(
-                        "Edit",
+                      child: Text(
+                        AppLocale.edit_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   @override
@@ -26,8 +29,10 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Change Password",
+        title: Text(
+          AppLocale.change_password_label.getString(
+            context,
+          ),
         ),
         centerTitle: true,
       ),
@@ -52,7 +57,9 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     ),
                     contentPadding: const EdgeInsets.all(10),
                     isDense: true,
-                    labelText: "New Password",
+                    labelText: AppLocale.new_password_label.getString(
+                      context,
+                    ),
                   ),
                   obscureText: true,
                   controller: passController,
@@ -104,8 +111,10 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           isLoading = false;
                         });
                       },
-                      child: const Text(
-                        "Update",
+                      child: Text(
+                        AppLocale.update_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -64,8 +67,10 @@ class CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Calendar",
+        title: Text(
+          AppLocale.calendar_label.getString(
+            context,
+          ),
         ),
       ),
       body: ListView(
@@ -78,7 +83,9 @@ class CalendarScreenState extends State<CalendarScreen> {
         children: [
           TableCalendar(
             daysOfWeekVisible: true,
-            locale: "ar_EG",
+            locale: localization.currentLocale.localeIdentifier == "ar"
+                ? "ar_EG"
+                : "en_US",
             firstDay: DateTime.now().subtract(
               const Duration(
                 days: 1200,

@@ -32,7 +32,7 @@ class PDFViewerScreenState extends State<PDFViewerScreen> {
       appBar: AppBar(
         centerTitle: false,
         title: const Text(
-          "PDF Viewer",
+          "PDF",
         ),
       ),
       body: const PDF(
