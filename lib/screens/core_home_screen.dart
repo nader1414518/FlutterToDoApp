@@ -9,6 +9,7 @@ import 'package:to_do_app/screens/favorites_screen.dart';
 import 'package:to_do_app/screens/home_screen.dart';
 import 'package:to_do_app/screens/profile_screen.dart';
 import 'package:to_do_app/screens/teams_screen.dart';
+import 'package:to_do_app/utils/globals.dart';
 
 class CoreHomeScreen extends StatefulWidget {
   @override
@@ -108,7 +109,9 @@ class CoreHomeScreenState extends State<CoreHomeScreen> {
           // popBehaviorOnSelectedNavBarItemPress: PopActionScreensType.all,
           popBehaviorOnSelectedNavBarItemPress: PopBehavior.all,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          backgroundColor: Colors.grey.shade900,
+          backgroundColor: Globals.colorMode == "dark"
+              ? Colors.grey.shade900
+              : Colors.white60,
           isVisible: isShown,
           animationSettings: const NavBarAnimationSettings(
             navBarItemAnimation: ItemAnimationSettings(

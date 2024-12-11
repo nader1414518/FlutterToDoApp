@@ -39,8 +39,10 @@ mixin AppLocale {
   static const String media_label = "Media";
   static const String team_label = "Team";
   static const String team_name_label = "Team Name";
+  static const String color_mode_label = "Color Mode";
 
   static const Map<String, dynamic> EN = {
+    color_mode_label: "Color Mode",
     team_name_label: "Team Name",
     team_label: "Team",
     media_label: "Media",
@@ -82,6 +84,7 @@ mixin AppLocale {
     profile_label: "Profile",
   };
   static const Map<String, dynamic> AR = {
+    color_mode_label: "الالوان",
     team_name_label: "اسم الفريق",
     team_label: "الفريق",
     media_label: "الوسائط",

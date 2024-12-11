@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +13,7 @@ import 'package:to_do_app/screens/change_email_screen.dart';
 import 'package:to_do_app/screens/change_password_screen.dart';
 import 'package:to_do_app/screens/login_screen.dart';
 import 'package:to_do_app/utils/assets_utils.dart';
+import 'package:to_do_app/utils/globals.dart';
 
 class ProfileScreen extends StatefulWidget {
   Function(bool) toggleNavbar;
@@ -31,6 +34,8 @@ class ProfileScreenState extends State<ProfileScreen> {
   String phone = "";
   String fullName = "";
   String avatarUrl = "";
+
+  bool isDark = Globals.colorMode == "dark" ? true : false;
 
   List<String> locales = [
     "English",
@@ -451,6 +456,44 @@ class ProfileScreenState extends State<ProfileScreen> {
                               localization.translate("ar");
                             }
                           },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: (MediaQuery.sizeOf(context).width - 60) * 0.6,
+                          child: Text(
+                            AppLocale.color_mode_label.getString(
+                              context,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: (MediaQuery.sizeOf(context).width - 60) * 0.3,
+                          child: CupertinoSwitch(
+                            value: isDark,
+                            onChanged: (bool value) {
+                              setState(() {
+                                isDark = value;
+                                if (isDark) {
+                                  Globals.colorMode = "dark";
+                                } else {
+                                  Globals.colorMode = "light";
+                                }
+                              });
+
+                              if (isDark) {
+                                AdaptiveTheme.of(context).setDark();
+                              } else {
+                                AdaptiveTheme.of(context).setLight();
+                              }
+                            },
+                          ),
                         ),
                       ],
                     ),

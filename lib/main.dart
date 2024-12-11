@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,11 +10,25 @@ import 'package:to_do_app/locale/app_locale.dart';
 import 'package:to_do_app/screens/home_screen.dart';
 import 'package:to_do_app/screens/login_screen.dart';
 import 'package:to_do_app/screens/welcome_screen.dart';
+import 'package:to_do_app/utils/globals.dart';
 
 final FlutterLocalization localization = FlutterLocalization.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  AdaptiveThemeMode currentTheme = AdaptiveThemeMode.light;
+  try {
+    final savedThemeMode = await AdaptiveTheme.getThemeMode();
+    currentTheme = savedThemeMode!;
+  } catch (e) {
+    currentTheme = AdaptiveThemeMode.light;
+    print(e.toString());
+  }
+
+  if (currentTheme.isDark) {
+    Globals.colorMode = "dark";
+  }
 
   try {
     var status =
@@ -65,11 +80,18 @@ void main() async {
 
   await initializeDateFormatting();
 
-  runApp(const MyApp());
+  runApp(MyApp(
+    currentTheme: currentTheme,
+  ));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final AdaptiveThemeMode currentTheme;
+
+  const MyApp({
+    super.key,
+    required this.currentTheme,
+  });
 
   @override
   MyAppState createState() => MyAppState();
@@ -105,13 +127,21 @@ class MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ToDo App',
-      supportedLocales: localization.supportedLocales,
-      localizationsDelegates: localization.localizationsDelegates,
-      theme: ThemeData.dark(),
-      home: WelcomeScreen(),
-      debugShowCheckedModeBanner: false,
+    return AdaptiveTheme(
+      light: ThemeData.light(),
+      dark: ThemeData.dark(),
+      initial: AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) {
+        return MaterialApp(
+          title: 'ToDo App',
+          supportedLocales: localization.supportedLocales,
+          localizationsDelegates: localization.localizationsDelegates,
+          theme: theme,
+          darkTheme: darkTheme,
+          home: WelcomeScreen(),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }
