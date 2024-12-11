@@ -110,8 +110,10 @@ class ChangeEmailScreenState extends State<ChangeEmailScreen> {
                           isLoading = false;
                         });
                       },
-                      child: const Text(
-                        "Update",
+                      child: Text(
+                        AppLocale.update_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],
