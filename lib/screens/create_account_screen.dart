@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 import 'package:to_do_app/utils/assets_utils.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -66,7 +69,9 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                         15,
                       ),
                     ),
-                    labelText: "Email",
+                    labelText: AppLocale.email_label.getString(
+                      context,
+                    ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 10,
@@ -86,7 +91,9 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                         15,
                       ),
                     ),
-                    labelText: "Password",
+                    labelText: AppLocale.password_label.getString(
+                      context,
+                    ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 10,
@@ -106,7 +113,9 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                         15,
                       ),
                     ),
-                    labelText: "Confirm Password",
+                    labelText: AppLocale.change_password_label.getString(
+                      context,
+                    ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 10,
@@ -205,8 +214,10 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                           isLoading = false;
                         });
                       },
-                      child: const Text(
-                        "Sign Up",
+                      child: Text(
+                        AppLocale.sign_up_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],

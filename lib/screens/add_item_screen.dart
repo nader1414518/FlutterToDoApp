@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 
 class AddItemScreen extends StatefulWidget {
   int? teamId;
@@ -25,8 +28,10 @@ class AddItemScreenState extends State<AddItemScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Add Item",
+        title: Text(
+          AppLocale.add_item_label.getString(
+            context,
+          ),
         ),
       ),
       body: ListView(
@@ -48,7 +53,9 @@ class AddItemScreenState extends State<AddItemScreen> {
               contentPadding: const EdgeInsets.all(
                 10,
               ),
-              labelText: "Title",
+              labelText: AppLocale.title_label.getString(
+                context,
+              ),
             ),
             controller: titleController,
           ),
@@ -66,7 +73,9 @@ class AddItemScreenState extends State<AddItemScreen> {
               contentPadding: const EdgeInsets.all(
                 10,
               ),
-              labelText: "Description",
+              labelText: AppLocale.description_label.getString(
+                context,
+              ),
             ),
             minLines: 1,
             maxLines: 10,
@@ -88,8 +97,10 @@ class AddItemScreenState extends State<AddItemScreen> {
 
                   Navigator.of(context).pop();
                 },
-                child: const Text(
-                  "Add",
+                child: Text(
+                  AppLocale.add_label.getString(
+                    context,
+                  ),
                 ),
               ),
             ],

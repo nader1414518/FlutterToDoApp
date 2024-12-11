@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/teams_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 
 class CreateTeamScreen extends StatefulWidget {
   @override
@@ -27,8 +30,10 @@ class CreateTeamScreenState extends State<CreateTeamScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text(
-          "Create Team",
+        title: Text(
+          AppLocale.create_team_label.getString(
+            context,
+          ),
         ),
       ),
       body: ListView(
@@ -50,7 +55,9 @@ class CreateTeamScreenState extends State<CreateTeamScreen> {
               contentPadding: const EdgeInsets.all(
                 10,
               ),
-              labelText: "Title",
+              labelText: AppLocale.title_label.getString(
+                context,
+              ),
             ),
             controller: titleController,
           ),
@@ -68,7 +75,9 @@ class CreateTeamScreenState extends State<CreateTeamScreen> {
               contentPadding: const EdgeInsets.all(
                 10,
               ),
-              labelText: "Description",
+              labelText: AppLocale.description_label.getString(
+                context,
+              ),
             ),
             minLines: 1,
             maxLines: 10,
@@ -100,8 +109,10 @@ class CreateTeamScreenState extends State<CreateTeamScreen> {
 
                   Navigator.of(context).pop();
                 },
-                child: const Text(
-                  "Create",
+                child: Text(
+                  AppLocale.create_label.getString(
+                    context,
+                  ),
                 ),
               ),
             ],

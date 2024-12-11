@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 import 'package:to_do_app/screens/core_home_screen.dart';
 import 'package:to_do_app/screens/create_account_screen.dart';
 import 'package:to_do_app/screens/forgot_password_screen.dart';
@@ -69,7 +72,9 @@ class LoginScreenState extends State<LoginScreen> {
                         15,
                       ),
                     ),
-                    labelText: "Email",
+                    labelText: AppLocale.email_label.getString(
+                      context,
+                    ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 10,
@@ -89,7 +94,9 @@ class LoginScreenState extends State<LoginScreen> {
                         15,
                       ),
                     ),
-                    labelText: "Password",
+                    labelText: AppLocale.password_label.getString(
+                      context,
+                    ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 10,
@@ -112,7 +119,11 @@ class LoginScreenState extends State<LoginScreen> {
                           ),
                         );
                       },
-                      child: const Text("Forgot Password?"),
+                      child: Text(
+                        AppLocale.forgot_password_label.getString(
+                          context,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -178,8 +189,10 @@ class LoginScreenState extends State<LoginScreen> {
                           isLoading = false;
                         });
                       },
-                      child: const Text(
-                        "Sign In",
+                      child: Text(
+                        AppLocale.sign_in_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],
@@ -201,8 +214,10 @@ class LoginScreenState extends State<LoginScreen> {
                           return CreateAccountScreen();
                         }));
                       },
-                      child: const Text(
-                        "Create New Account",
+                      child: Text(
+                        AppLocale.create_account_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],
@@ -252,9 +267,11 @@ class LoginScreenState extends State<LoginScreen> {
                           isLoading = false;
                         });
                       },
-                      child: const Text(
-                        "Sign In With Google",
-                        style: TextStyle(
+                      child: Text(
+                        AppLocale.sign_in_with_google_label.getString(
+                          context,
+                        ),
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),

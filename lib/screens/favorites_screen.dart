@@ -1,6 +1,9 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 import 'package:to_do_app/screens/edit_item_screen.dart';
 import 'package:to_do_app/screens/item_media_screen.dart';
 
@@ -56,8 +59,10 @@ class FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Favorites",
+        title: Text(
+          AppLocale.favorites_label.getString(
+            context,
+          ),
         ),
       ),
       body: isLoading
@@ -348,9 +353,11 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                                   ),
                                   visualDensity: VisualDensity.compact,
                                 ),
-                                child: const Text(
-                                  "Edit",
-                                  style: TextStyle(
+                                child: Text(
+                                  AppLocale.edit_label.getString(
+                                    context,
+                                  ),
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -361,9 +368,18 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title: const Text("Remove Item"),
-                                          content: const Text(
-                                              "Are you sure you want to remove this item?"),
+                                          title: Text(
+                                            AppLocale.remove_item_label
+                                                .getString(
+                                              context,
+                                            ),
+                                          ),
+                                          content: Text(
+                                            AppLocale.remove_item_desc
+                                                .getString(
+                                              context,
+                                            ),
+                                          ),
                                           actionsAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           actions: [
@@ -377,9 +393,12 @@ class FavoritesScreenState extends State<FavoritesScreen> {
 
                                                 getData();
                                               },
-                                              child: const Text(
-                                                "Remove",
-                                                style: TextStyle(
+                                              child: Text(
+                                                AppLocale.remove_label
+                                                    .getString(
+                                                  context,
+                                                ),
+                                                style: const TextStyle(
                                                   color: Colors.red,
                                                 ),
                                               ),
@@ -388,8 +407,11 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: const Text(
-                                                "Cancel",
+                                              child: Text(
+                                                AppLocale.cancel_label
+                                                    .getString(
+                                                  context,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -421,9 +443,11 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                                   ),
                                   visualDensity: VisualDensity.compact,
                                 ),
-                                child: const Text(
-                                  "Remove",
-                                  style: TextStyle(
+                                child: Text(
+                                  AppLocale.remove_label.getString(
+                                    context,
+                                  ),
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

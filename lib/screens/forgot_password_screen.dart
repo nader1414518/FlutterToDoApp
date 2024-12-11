@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 import 'package:to_do_app/utils/assets_utils.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -64,7 +67,9 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         15,
                       ),
                     ),
-                    labelText: "Email",
+                    labelText: AppLocale.email_label.getString(
+                      context,
+                    ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 10,
@@ -129,8 +134,10 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           isLoading = false;
                         });
                       },
-                      child: const Text(
-                        "Reset Password",
+                      child: Text(
+                        AppLocale.update_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],

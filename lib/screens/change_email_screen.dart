@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 
 class ChangeEmailScreen extends StatefulWidget {
   @override
@@ -26,8 +29,10 @@ class ChangeEmailScreenState extends State<ChangeEmailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Change Email",
+        title: Text(
+          AppLocale.change_email_label.getString(
+            context,
+          ),
         ),
         centerTitle: true,
       ),
@@ -52,7 +57,9 @@ class ChangeEmailScreenState extends State<ChangeEmailScreen> {
                     ),
                     contentPadding: const EdgeInsets.all(10),
                     isDense: true,
-                    labelText: "New Email",
+                    labelText: AppLocale.new_email_label.getString(
+                      context,
+                    ),
                   ),
                   controller: emailController,
                 ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/todo_items_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 import 'package:to_do_app/utils/globals.dart';
 
 class EditItemScreen extends StatefulWidget {
@@ -55,8 +58,10 @@ class EditItemScreenState extends State<EditItemScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Edit Item",
+        title: Text(
+          AppLocale.edit_item_label.getString(
+            context,
+          ),
         ),
       ),
       body: ListView(
@@ -78,7 +83,9 @@ class EditItemScreenState extends State<EditItemScreen> {
               contentPadding: const EdgeInsets.all(
                 10,
               ),
-              labelText: "Title",
+              labelText: AppLocale.title_label.getString(
+                context,
+              ),
             ),
             controller: titleController,
           ),
@@ -96,7 +103,9 @@ class EditItemScreenState extends State<EditItemScreen> {
               contentPadding: const EdgeInsets.all(
                 10,
               ),
-              labelText: "Description",
+              labelText: AppLocale.description_label.getString(
+                context,
+              ),
             ),
             minLines: 1,
             maxLines: 10,
@@ -117,8 +126,10 @@ class EditItemScreenState extends State<EditItemScreen> {
 
                   Navigator.of(context).pop();
                 },
-                child: const Text(
-                  "Edit",
+                child: Text(
+                  AppLocale.edit_label.getString(
+                    context,
+                  ),
                 ),
               ),
             ],

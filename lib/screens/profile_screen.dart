@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:to_do_app/controllers/auth_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
 import 'package:to_do_app/main.dart';
 import 'package:to_do_app/screens/change_email_screen.dart';
 import 'package:to_do_app/screens/change_password_screen.dart';
@@ -112,8 +114,10 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Profile",
+        title: Text(
+          AppLocale.profile_label.getString(
+            context,
+          ),
         ),
       ),
       body: isLoading
@@ -121,8 +125,12 @@ class ProfileScreenState extends State<ProfileScreen> {
               child: CircularProgressIndicator(),
             )
           : currentUserData.isEmpty
-              ? const Center(
-                  child: Text("User not found!!"),
+              ? Center(
+                  child: Text(
+                    AppLocale.user_not_found_label.getString(
+                      context,
+                    ),
+                  ),
                 )
               : ListView(
                   padding: const EdgeInsets.symmetric(
@@ -382,8 +390,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                               },
                             );
                           },
-                          child: const Text(
-                            "Change My Email",
+                          child: Text(
+                            AppLocale.change_email_label.getString(
+                              context,
+                            ),
                           ),
                         ),
                       ],
@@ -405,8 +415,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                               },
                             );
                           },
-                          child: const Text(
-                            "Change My Password",
+                          child: Text(
+                            AppLocale.change_password_label.getString(
+                              context,
+                            ),
                           ),
                         ),
                       ],
@@ -478,8 +490,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                               ),
                             );
                           },
-                          child: const Text(
-                            "Log Out",
+                          child: Text(
+                            AppLocale.logout_label.getString(
+                              context,
+                            ),
                           ),
                         ),
                       ],

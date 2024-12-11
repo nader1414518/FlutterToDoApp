@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:to_do_app/controllers/teams_controller.dart';
+import 'package:to_do_app/locale/app_locale.dart';
+import 'package:to_do_app/main.dart';
 
 class JoinTeamScreen extends StatefulWidget {
   @override
@@ -28,8 +31,10 @@ class JoinTeamScreenState extends State<JoinTeamScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Join Team",
+        title: Text(
+          AppLocale.join_team_label.getString(
+            context,
+          ),
         ),
       ),
       body: isLoading
@@ -55,7 +60,9 @@ class JoinTeamScreenState extends State<JoinTeamScreen> {
                     contentPadding: const EdgeInsets.all(
                       10,
                     ),
-                    labelText: "Team Code",
+                    labelText: AppLocale.team_code_label.getString(
+                      context,
+                    ),
                   ),
                   controller: codeController,
                 ),
@@ -106,8 +113,10 @@ class JoinTeamScreenState extends State<JoinTeamScreen> {
                           isLoading = false;
                         });
                       },
-                      child: const Text(
-                        "Join",
+                      child: Text(
+                        AppLocale.join_label.getString(
+                          context,
+                        ),
                       ),
                     ),
                   ],
