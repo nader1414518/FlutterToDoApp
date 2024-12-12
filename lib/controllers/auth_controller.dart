@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,18 @@ class AuthController {
       await prefs.setString("login_email", response.user!.email!);
       await prefs.setString("login_password", "");
       await prefs.setString("uid", response.user!.id);
+
+      try {
+        var fcmToken = await FirebaseMessaging.instance.getToken();
+        await Supabase.instance.client.auth.updateUser(
+          UserAttributes(
+            data: {
+              ...response.user!.userMetadata!,
+              "token": fcmToken,
+            },
+          ),
+        );
+      } catch (e) {}
 
       return {
         "result": true,
@@ -107,6 +120,18 @@ class AuthController {
       await prefs.setString("login_email", email.toLowerCase().trim());
       await prefs.setString("login_password", password);
       await prefs.setString("uid", res.user!.id);
+
+      try {
+        var fcmToken = await FirebaseMessaging.instance.getToken();
+        await Supabase.instance.client.auth.updateUser(
+          UserAttributes(
+            data: {
+              ...res.user!.userMetadata!,
+              "token": fcmToken,
+            },
+          ),
+        );
+      } catch (e) {}
 
       return {
         "result": true,
