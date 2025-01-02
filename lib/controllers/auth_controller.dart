@@ -1,7 +1,9 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:to_do_app/main.dart';
 
 class AuthController {
   static Future<Map<String, dynamic>> signInWithGoogle() async {
@@ -36,6 +38,18 @@ class AuthController {
       await prefs.setString("login_email", response.user!.email!);
       await prefs.setString("login_password", "");
       await prefs.setString("uid", response.user!.id);
+
+      try {
+        var fcmToken = await FirebaseMessaging.instance.getToken();
+        await Supabase.instance.client.auth.updateUser(
+          UserAttributes(
+            data: {
+              ...response.user!.userMetadata!,
+              "token": fcmToken,
+            },
+          ),
+        );
+      } catch (e) {}
 
       return {
         "result": true,
@@ -108,6 +122,18 @@ class AuthController {
       await prefs.setString("login_password", password);
       await prefs.setString("uid", res.user!.id);
 
+      try {
+        var fcmToken = await FirebaseMessaging.instance.getToken();
+        await Supabase.instance.client.auth.updateUser(
+          UserAttributes(
+            data: {
+              ...res.user!.userMetadata!,
+              "token": fcmToken,
+            },
+          ),
+        );
+      } catch (e) {}
+
       return {
         "result": true,
         "message": "Logged in successfully ... ",
@@ -126,8 +152,8 @@ class AuthController {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       var isLoggedIn = prefs.getBool("is_logged_in") ?? false;
-      if (isLoggedIn) {
-        var method = prefs.getString("login_method");
+      if (isLoggedIn == true) {
+        var method = prefs.getString("login_method") ?? "";
         if (method == "Email") {
           var email = prefs.getString("login_email");
           var password = prefs.getString("login_password");
@@ -188,6 +214,11 @@ class AuthController {
       await prefs.remove("login_email");
       await prefs.remove("login_password");
       await prefs.remove("uid");
+
+      // secureStorage.delete(key: "is_logged_in");
+      // secureStorage.delete(key: "login_email");
+      // secureStorage.delete(key: "login_password");
+      // secureStorage.delete(key: "uid");
     } catch (e) {
       print(e.toString());
     }

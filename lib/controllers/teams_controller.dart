@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:to_do_app/controllers/auth_controller.dart';
 
 class TeamsController {
   static Future<Map<String, dynamic>> createTeam(
@@ -378,6 +383,98 @@ class TeamsController {
       }).toList();
     } catch (e) {
       return [];
+    }
+  }
+
+  static Future<List<String>> getTeamMembers(int teamId) async {
+    try {
+      var userTeamRes = await Supabase.instance.client
+          .from("users_teams")
+          .select()
+          .eq("teamId", teamId);
+
+      return userTeamRes.map((e) => e["userId"].toString()).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> sendNotificationToMembers(
+    int teamId,
+    String title,
+    String body,
+  ) async {
+    try {
+      var membersUIDs = await getTeamMembers(teamId);
+
+      for (var uid in membersUIDs) {
+        // Send notification
+        var tokenRes = await http.get(
+          Uri.parse("${dotenv.env["CLOUD_API"]}/generate_fcm_token"),
+          headers: {
+            "Authorization": "Bearer ${dotenv.env["FCM_SERVER_KEY_V2"]}",
+          },
+        );
+
+        // print(tokenRes.body);
+
+        var tokenResResult = Map<String, dynamic>.from(
+          jsonDecode(tokenRes.body) as Map,
+        );
+        if (tokenResResult["result"] == true) {
+          var accessToken = tokenResResult["token"].toString();
+
+          // print(accessToken);
+
+          String userToken = "";
+          var userDataRes = await AuthController.getCurrentUserData();
+          if (userDataRes["result"] == true) {
+            userToken = userDataRes["data"]["user_metadata"]["token"];
+          }
+
+          var sendRes = await http.post(
+            Uri.parse("${dotenv.env["FCM_SEND_URL_V2"]}"),
+            headers: <String, String>{
+              "Content-Type": "application/json",
+              "Authorization": "Bearer $accessToken",
+            },
+            body: jsonEncode(
+              <String, dynamic>{
+                "message": {
+                  "token": userToken,
+                  "notification": {
+                    "title": title,
+                    "body": body,
+                  },
+                  "data": {},
+                }
+              },
+            ),
+          );
+
+          if (sendRes.statusCode == 200) {
+            continue;
+          } else {
+            print(sendRes.body);
+            return {
+              "result": false,
+              "message": "Error ${sendRes.statusCode}",
+            };
+          }
+        } else {
+          return tokenResResult;
+        }
+      }
+
+      return {
+        "result": true,
+        "message": "Success",
+      };
+    } catch (e) {
+      return {
+        "result": false,
+        "message": e.toString(),
+      };
     }
   }
 }

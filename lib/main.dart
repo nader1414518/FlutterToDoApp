@@ -1,8 +1,10 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -11,8 +13,33 @@ import 'package:to_do_app/screens/home_screen.dart';
 import 'package:to_do_app/screens/login_screen.dart';
 import 'package:to_do_app/screens/welcome_screen.dart';
 import 'package:to_do_app/utils/globals.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 final FlutterLocalization localization = FlutterLocalization.instance;
+
+@pragma("vm:entry-point")
+Future<void> onBackgroundMessageReceived(data) async {
+  var notificationData = data.notification;
+
+  AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: 1,
+      channelKey: 'todo_app_notifications',
+      title: notificationData!.title,
+      body: notificationData.body,
+      actionType: ActionType.Default,
+      // autoDismissible: true,
+      criticalAlert: true,
+      wakeUpScreen: true,
+      category: NotificationCategory.Email,
+      notificationLayout: NotificationLayout.BigText,
+      payload: Map<String, String>.from(
+        data.data as Map,
+      ),
+    ),
+  );
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +56,12 @@ void main() async {
   if (currentTheme.isDark) {
     Globals.colorMode = "dark";
   }
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (error) {}
 
   try {
     var status =
@@ -59,6 +92,34 @@ void main() async {
         // debug: true,
       );
     }
+  } catch (e) {
+    print(e.toString());
+  }
+
+  try {
+    FirebaseMessaging.onMessage.listen((data) {
+      var notificationData = data.notification;
+
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 1,
+          channelKey: 'basic_channel',
+          title: notificationData!.title,
+          body: notificationData.body,
+          actionType: ActionType.Default,
+          // autoDismissible: true,
+          criticalAlert: true,
+          wakeUpScreen: true,
+          category: NotificationCategory.Email,
+          notificationLayout: NotificationLayout.BigText,
+          payload: Map<String, String>.from(
+            data.data as Map,
+          ),
+        ),
+      );
+    });
+
+    FirebaseMessaging.onBackgroundMessage(onBackgroundMessageReceived);
   } catch (e) {
     print(e.toString());
   }
