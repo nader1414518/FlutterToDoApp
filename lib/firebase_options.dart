@@ -41,48 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD4L2iznoHTLtsrQMvoelnMn4SZL6hsaag',
-    appId: '1:635551106785:web:57fb7a7f54702a02c799a0',
-    messagingSenderId: '635551106785',
-    projectId: 'yttodoapp-1dacb',
-    authDomain: 'yttodoapp-1dacb.firebaseapp.com',
-    storageBucket: 'yttodoapp-1dacb.firebasestorage.app',
-    measurementId: 'G-51FZR5LJGM',
+    apiKey: 'AIzaSyAMrO4jKNSNjCRXng3wSBH9qPnyTpzbA9k',
+    appId: '1:786469384727:web:dcfb0db64499e55a7e6252',
+    messagingSenderId: '786469384727',
+    projectId: 'fluttertodoapp-f8b26',
+    authDomain: 'fluttertodoapp-f8b26.firebaseapp.com',
+    storageBucket: 'fluttertodoapp-f8b26.firebasestorage.app',
+    measurementId: 'G-PX4EB7NM4Z',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCsm_cdapJUykKxSWpPtk0pdnXUEQ09b7s',
-    appId: '1:635551106785:android:8f77a6eb4831b120c799a0',
-    messagingSenderId: '635551106785',
-    projectId: 'yttodoapp-1dacb',
-    storageBucket: 'yttodoapp-1dacb.firebasestorage.app',
+    apiKey: 'AIzaSyBHTklUvknvmwllX_oOeibIH-t98Q7yKaQ',
+    appId: '1:786469384727:android:c26906b5f333a5037e6252',
+    messagingSenderId: '786469384727',
+    projectId: 'fluttertodoapp-f8b26',
+    storageBucket: 'fluttertodoapp-f8b26.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDbmhuao1bdRDEaUSgtR8c92VFpIuIexno',
-    appId: '1:635551106785:ios:9a95e37533060fdfc799a0',
-    messagingSenderId: '635551106785',
-    projectId: 'yttodoapp-1dacb',
-    storageBucket: 'yttodoapp-1dacb.firebasestorage.app',
+    apiKey: 'AIzaSyDsjaPzXhDfQtPL-WFvKuayMLLSNj7StXY',
+    appId: '1:786469384727:ios:baf32e411bae57a37e6252',
+    messagingSenderId: '786469384727',
+    projectId: 'fluttertodoapp-f8b26',
+    storageBucket: 'fluttertodoapp-f8b26.firebasestorage.app',
     iosBundleId: 'com.yt.toDoApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDbmhuao1bdRDEaUSgtR8c92VFpIuIexno',
-    appId: '1:635551106785:ios:9a95e37533060fdfc799a0',
-    messagingSenderId: '635551106785',
-    projectId: 'yttodoapp-1dacb',
-    storageBucket: 'yttodoapp-1dacb.firebasestorage.app',
+    apiKey: 'AIzaSyDsjaPzXhDfQtPL-WFvKuayMLLSNj7StXY',
+    appId: '1:786469384727:ios:baf32e411bae57a37e6252',
+    messagingSenderId: '786469384727',
+    projectId: 'fluttertodoapp-f8b26',
+    storageBucket: 'fluttertodoapp-f8b26.firebasestorage.app',
     iosBundleId: 'com.yt.toDoApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyD4L2iznoHTLtsrQMvoelnMn4SZL6hsaag',
-    appId: '1:635551106785:web:d03546a475bd52e2c799a0',
-    messagingSenderId: '635551106785',
-    projectId: 'yttodoapp-1dacb',
-    authDomain: 'yttodoapp-1dacb.firebaseapp.com',
-    storageBucket: 'yttodoapp-1dacb.firebasestorage.app',
-    measurementId: 'G-PQ7SJBXJ2T',
+    apiKey: 'AIzaSyAMrO4jKNSNjCRXng3wSBH9qPnyTpzbA9k',
+    appId: '1:786469384727:web:8624da38380116f07e6252',
+    messagingSenderId: '786469384727',
+    projectId: 'fluttertodoapp-f8b26',
+    authDomain: 'fluttertodoapp-f8b26.firebaseapp.com',
+    storageBucket: 'fluttertodoapp-f8b26.firebasestorage.app',
+    measurementId: 'G-C9GMG0TG9B',
   );
+
 }

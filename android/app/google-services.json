@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "635551106785",
-    "project_id": "yttodoapp-1dacb",
-    "storage_bucket": "yttodoapp-1dacb.firebasestorage.app"
+    "project_number": "786469384727",
+    "project_id": "fluttertodoapp-f8b26",
+    "storage_bucket": "fluttertodoapp-f8b26.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:635551106785:android:8f77a6eb4831b120c799a0",
+        "mobilesdk_app_id": "1:786469384727:android:c26906b5f333a5037e6252",
         "android_client_info": {
           "package_name": "com.yt.to_do_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCsm_cdapJUykKxSWpPtk0pdnXUEQ09b7s"
+          "current_key": "AIzaSyBHTklUvknvmwllX_oOeibIH-t98Q7yKaQ"
         }
       ],
       "services": {

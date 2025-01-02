@@ -410,11 +410,13 @@ class TeamsController {
       for (var uid in membersUIDs) {
         // Send notification
         var tokenRes = await http.get(
-          Uri.parse("${dotenv.env["CLOUD_API"]}/api/generate_fcm_token"),
+          Uri.parse("${dotenv.env["CLOUD_API"]}/generate_fcm_token"),
           headers: {
             "Authorization": "Bearer ${dotenv.env["FCM_SERVER_KEY_V2"]}",
           },
         );
+
+        // print(tokenRes.body);
 
         var tokenResResult = Map<String, dynamic>.from(
           jsonDecode(tokenRes.body) as Map,
