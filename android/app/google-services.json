@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "635551106785",
+    "project_id": "yttodoapp-1dacb",
+    "storage_bucket": "yttodoapp-1dacb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635551106785:android:8f77a6eb4831b120c799a0",
+        "android_client_info": {
+          "package_name": "com.yt.to_do_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsm_cdapJUykKxSWpPtk0pdnXUEQ09b7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

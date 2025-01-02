@@ -7,6 +7,7 @@ import 'package:to_do_app/locale/app_locale.dart';
 import 'package:to_do_app/screens/add_item_screen.dart';
 import 'package:to_do_app/screens/edit_item_screen.dart';
 import 'package:to_do_app/screens/item_media_screen.dart';
+import 'package:to_do_app/screens/teams/send_team_notification_screen.dart';
 
 class TeamScreen extends StatefulWidget {
   final int id;
@@ -100,6 +101,26 @@ class TeamScreenState extends State<TeamScreen> {
             context,
           ),
         ),
+        actions: [
+          teamData["isMine"] == true
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return SendTeamNotificationScreen(teamId: widget.id);
+                        },
+                      ),
+                    ).then((value) {
+                      getData();
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.notification_add,
+                  ),
+                )
+              : Container(),
+        ],
       ),
       body: isLoading
           ? const Center(

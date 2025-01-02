@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,30 +39,17 @@ class AuthController {
       await prefs.setString("login_password", "");
       await prefs.setString("uid", response.user!.id);
 
-      // await secureStorage.write(
-      //   key: "is_logged_in",
-      //   value: "true",
-      // );
-
-      // await secureStorage.write(
-      //   key: "login_method",
-      //   value: "Google",
-      // );
-
-      // await secureStorage.write(
-      //   key: "login_password",
-      //   value: "",
-      // );
-
-      // await secureStorage.write(
-      //   key: "login_email",
-      //   value: response.user!.email!,
-      // );
-
-      // await secureStorage.write(
-      //   key: "uid",
-      //   value: response.user!.id,
-      // );
+      try {
+        var fcmToken = await FirebaseMessaging.instance.getToken();
+        await Supabase.instance.client.auth.updateUser(
+          UserAttributes(
+            data: {
+              ...response.user!.userMetadata!,
+              "token": fcmToken,
+            },
+          ),
+        );
+      } catch (e) {}
 
       return {
         "result": true,
@@ -134,30 +122,17 @@ class AuthController {
       await prefs.setString("login_password", password);
       await prefs.setString("uid", res.user!.id);
 
-      // await secureStorage.write(
-      //   key: "is_logged_in",
-      //   value: "true",
-      // );
-
-      // await secureStorage.write(
-      //   key: "login_email",
-      //   value: email.toLowerCase().trim(),
-      // );
-
-      // await secureStorage.write(
-      //   key: "login_password",
-      //   value: password,
-      // );
-
-      // await secureStorage.write(
-      //   key: "login_method",
-      //   value: "Email",
-      // );
-
-      // await secureStorage.write(
-      //   key: "uid",
-      //   value: res.user!.id,
-      // );
+      try {
+        var fcmToken = await FirebaseMessaging.instance.getToken();
+        await Supabase.instance.client.auth.updateUser(
+          UserAttributes(
+            data: {
+              ...res.user!.userMetadata!,
+              "token": fcmToken,
+            },
+          ),
+        );
+      } catch (e) {}
 
       return {
         "result": true,
