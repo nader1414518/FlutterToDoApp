@@ -3,6 +3,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,6 +14,15 @@ import 'package:to_do_app/screens/welcome_screen.dart';
 import 'package:to_do_app/utils/globals.dart';
 
 final FlutterLocalization localization = FlutterLocalization.instance;
+
+const FlutterSecureStorage secureStorage = FlutterSecureStorage(
+  aOptions: AndroidOptions(
+    encryptedSharedPreferences: true,
+  ),
+  iOptions: IOSOptions(
+    accessibility: KeychainAccessibility.first_unlock,
+  ),
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
